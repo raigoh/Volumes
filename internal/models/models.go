@@ -1,7 +1,5 @@
 package models
 
-package models
-
 import (
 	"time"
 )
@@ -56,4 +54,9 @@ type Like struct {
 type PostCategory struct {
 	PostID     int64
 	CategoryID int64
+}
+
+// PageData holds data to be passed to the templates
+type PageData struct {
+	Title string
 }
