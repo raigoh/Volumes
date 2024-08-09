@@ -1,0 +1,37 @@
+{{define "content"}}
+<h2>Welcome to Literary Lions Forum</h2>
+<div class="post-filters">
+  <form action="/" method="GET">
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+      <option value="">All</option>
+      <option value="fiction" {{if eq .SelectedCategory "fiction"}}selected{{end}}>Fiction</option>
+      <option value="non-fiction" {{if eq .SelectedCategory "non-fiction"}}selected{{end}}>Non-Fiction</option>
+      <option value="poetry" {{if eq .SelectedCategory "poetry"}}selected{{end}}>Poetry</option>
+    </select>
+    {{if .User}}
+    <label><input type="checkbox" name="created" value="true" {{if .ShowMyPosts}}checked{{end}}/> My Posts</label>
+    <label><input type="checkbox" name="liked" value="true" {{if .ShowLikedPosts}}checked{{end}}/> Liked Posts</label>
+    {{end}}
+    <button type="submit">Filter</button>
+  </form>
+</div>
+<div class="posts">
+  {{range .Posts}}
+  <article class="post">
+    <h3><a href="/post/{{.ID}}">{{.Title}}</a></h3>
+    <p class="post-meta">
+      Posted by {{.Username}} in {{.Category}} on {{.CreatedAt.Format "Jan 02, 2006"}}
+    </p>
+    <p class="post-excerpt">{{.Excerpt}}</p>
+    <div class="post-stats">
+      <span>{{.Likes}} Likes</span>
+      <span>{{.Dislikes}} Dislikes</span>
+      <span>{{.CommentCount}} Comments</span>
+    </div>
+  </article>
+  {{else}}
+  <p>No posts found.</p>
+  {{end}}
+</div>
+{{end}}
