@@ -9,15 +9,15 @@ import (
 
 // Handlers for different routes
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "home.html", models.PageData{Title: "Home - Literary Lions Forum"})
+	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Home - Literary Lions Forum"})
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "login.html", models.PageData{Title: "Login - Literary Lions Forum"})
+	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Login - Literary Lions Forum"})
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "register.html", models.PageData{Title: "Register - Literary Lions Forum"})
+	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Register - Literary Lions Forum"})
 }
 
 func main() {

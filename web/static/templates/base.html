@@ -3,21 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{block "title" .}}Literary Lions Forum{{end}}</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <title>{{.Title}}</title>
   </head>
-  <body>
-    <header>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/login">Login</a></li>
-          <li><a href="/register">Register</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <main>{{block "content" .}}{{end}}</main>
+  <body class="base-template">
+    <main>
+      <div class="login-container">
+        <h1>Login</h1>
+        <form class="login-form">
+          <input type="text" placeholder="Username" required />
+          <input type="password" placeholder="Password" required />
+          <div class="options">
+            <label><input type="checkbox" /> Remember me</label>
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit">Login</button>
+          <div class="register">
+            Don't have an account? <a href="/register">Register</a>
+          </div>
+        </form>
+      </div>
+    </main>
 
     <footer>
       <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
