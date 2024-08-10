@@ -1,8 +1,26 @@
-# Using base image of Ubuntu
-FROM ubuntu AS base
+# Use an official Golang runtime as a parent image
+FROM golang:1.22
 
-# Copy the SQLite3 from local directory to docker image
-ADD  ./database/sqlite3/sqlite3 sqlite3
+# Install SQLite3
+RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
 
-# Run the SQLite inside docker container when docker image is at run
-CMD [ "./sqlite3" ]
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the entire project
+COPY . .
+
+# Download all dependencies
+RUN go mod download
+
+# Build the Go app
+RUN go build -o main ./cmd/server
+
+# Set the DB_PATH environment variable
+ENV DB_PATH=/app/data/forum.db
+
+# Expose port 8080 to the outside world
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["./main"]

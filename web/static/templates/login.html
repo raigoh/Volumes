@@ -2,11 +2,11 @@
 <div class="login-template">
   <div class="login-container">
     <h1>Login</h1>
-    <form class="login-form">
-      <input type="text" placeholder="Username" required />
-      <input type="password" placeholder="Password" required />
+    <form class="login-form" method="POST" action="/login">
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="password" name="password" placeholder="Password" required />
       <div class="options">
-        <label><input type="checkbox" /> Remember me</label>
+        <label><input type="checkbox" name="remember" /> Remember me</label>
         <a href="#">Forgot password?</a>
       </div>
       <button type="submit">Login</button>
@@ -14,6 +14,9 @@
         Don't have an account? <a href="/register">Register</a>
       </div>
     </form>
+    {{if .Error}}
+    <div class="error">{{.Error}}</div>
+    {{end}}
   </div>
   <footer>
     <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>

@@ -9,8 +9,8 @@
   <body>
     <main>
       {{if eq .Page "login"}} {{template "login" .}} {{else if eq .Page
-      "register"}} {{template "register" .}} {{else}} {{block "content"
-      .}}{{end}}
+      "register"}} {{template "register" .}} {{else if eq .Page "home"}}
+      {{template "home" .}} {{else}} {{block "content" .}}{{end}}
       <footer>
         <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
       </footer>

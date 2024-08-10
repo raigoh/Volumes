@@ -14,8 +14,10 @@ type User struct {
 }
 
 type Session struct {
-	ID        string // UUID
-	UserID    int64
+	ID        string
+	UserID    int
+	Data      map[string]interface{}
+	CreatedAt time.Time
 	ExpiresAt time.Time
 }
 
@@ -60,4 +62,6 @@ type PostCategory struct {
 type PageData struct {
 	Title string
 	Page  string
+	Error string
+	Data  map[string]interface{}
 }
