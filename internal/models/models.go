@@ -59,4 +59,5 @@ type PostCategory struct {
 // PageData holds data to be passed to the templates
 type PageData struct {
 	Title string
+	Page  string
 }

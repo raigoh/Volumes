@@ -1,23 +1,32 @@
 package main
 
 import (
+	"fmt"
 	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/utils"
 	"log"
 	"net/http"
+	"os"
 )
 
 // Handlers for different routes
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Home - Literary Lions Forum"})
+	// Redirect to login page
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Login - Literary Lions Forum"})
+	utils.RenderTemplate(w, "base.html", models.PageData{
+		Title: "Login - Literary Lions Forum",
+		Page:  "login",
+	})
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "base.html", models.PageData{Title: "Register - Literary Lions Forum"})
+	utils.RenderTemplate(w, "base.html", models.PageData{
+		Title: "Register - Literary Lions Forum",
+		Page:  "register",
+	})
 }
 
 func main() {
@@ -35,7 +44,12 @@ func main() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
 
-	log.Println("Server starting on :8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("Server is running on http://localhost:" + port)
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("Server failed to start:", err)
 	}
