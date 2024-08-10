@@ -3,6 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"literary-lions-forum/internal/models"
+	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -11,7 +14,11 @@ var DB *sql.DB
 
 func InitDB() error {
 	var err error
-	DB, err = sql.Open("sqlite3", "./forum.db")
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "./forum.db" // Default path if not set
+	}
+	DB, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return fmt.Errorf("failed to open database: %v", err)
 	}
@@ -21,6 +28,7 @@ func InitDB() error {
 		return fmt.Errorf("failed to create tables: %v", err)
 	}
 
+	fmt.Println("Database and tables initialized successfully at:", dbPath)
 	return nil
 }
 
@@ -100,4 +108,77 @@ func createTables() error {
 	}
 
 	return nil
+}
+
+func VerifyDatabaseContents() {
+	rows, err := DB.Query("SELECT id, username, email FROM users")
+	if err != nil {
+		log.Printf("Error querying users: %v", err)
+		return
+	}
+	defer rows.Close()
+
+	log.Println("Users in the database:")
+	for rows.Next() {
+		var id int
+		var username, email string
+		err := rows.Scan(&id, &username, &email)
+		if err != nil {
+			log.Printf("Error scanning row: %v", err)
+			continue
+		}
+		log.Printf("ID: %d, Username: %s, Email: %s", id, username, email)
+	}
+}
+
+func GetLatestPosts(limit int) ([]models.Post, error) {
+	posts := []models.Post{}
+	query := `SELECT id, user_id, title, content, created_at, updated_at 
+              FROM posts 
+              ORDER BY created_at DESC 
+              LIMIT ?`
+
+	rows, err := DB.Query(query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post models.Post
+		err := rows.Scan(&post.ID, &post.UserID, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func GetPopularCategories(limit int) ([]models.Category, error) {
+	categories := []models.Category{}
+	query := `SELECT c.id, c.name 
+              FROM categories c
+              JOIN post_categories pc ON c.id = pc.category_id
+              GROUP BY c.id
+              ORDER BY COUNT(pc.post_id) DESC
+              LIMIT ?`
+
+	rows, err := DB.Query(query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var category models.Category
+		err := rows.Scan(&category.ID, &category.Name)
+		if err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+
+	return categories, nil
 }

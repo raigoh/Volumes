@@ -16,6 +16,9 @@ RUN go mod download
 # Build the Go app
 RUN go build -o main ./cmd/server
 
+# Set the DB_PATH environment variable
+ENV DB_PATH=/app/data/forum.db
+
 # Expose port 8080 to the outside world
 EXPOSE 8080
 

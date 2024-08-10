@@ -3,67 +3,99 @@ package session
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"literary-lions-forum/internal/models"
 	"net/http"
 	"sync"
+	"time"
 )
 
 var sessionStore = struct {
 	sync.RWMutex
-	sessions map[string]map[string]interface{}
-}{sessions: make(map[string]map[string]interface{})}
+	sessions map[string]*models.Session
+}{sessions: make(map[string]*models.Session)}
 
-// Generate a random session ID
+const (
+	sessionCookieName = "session_id"
+	sessionDuration   = 24 * time.Hour
+)
+
 func generateSessionID() string {
 	b := make([]byte, 32)
 	rand.Read(b)
 	return base64.URLEncoding.EncodeToString(b)
 }
 
-// Create or retrieve a session
-func GetSession(w http.ResponseWriter, r *http.Request) map[string]interface{} {
-	cookie, err := r.Cookie("session_id")
+func GetSession(w http.ResponseWriter, r *http.Request) (*models.Session, error) {
+	cookie, err := r.Cookie(sessionCookieName)
 	if err != nil || cookie.Value == "" {
-		sessionID := generateSessionID()
-		http.SetCookie(w, &http.Cookie{
-			Name:  "session_id",
-			Value: sessionID,
-			Path:  "/",
-		})
-
-		sessionStore.Lock()
-		sessionStore.sessions[sessionID] = make(map[string]interface{})
-		sessionStore.Unlock()
-
-		return sessionStore.sessions[sessionID]
+		return createSession(w)
 	}
 
 	sessionStore.RLock()
 	session, exists := sessionStore.sessions[cookie.Value]
 	sessionStore.RUnlock()
 
-	if !exists {
-		sessionStore.Lock()
-		session = make(map[string]interface{})
-		sessionStore.sessions[cookie.Value] = session
-		sessionStore.Unlock()
+	if !exists || time.Now().After(session.ExpiresAt) {
+		if exists {
+			DestroySession(w, r)
+		}
+		return createSession(w)
 	}
 
-	return session
+	// Extend session expiration
+	session.ExpiresAt = time.Now().Add(sessionDuration)
+	return session, nil
 }
 
-// Destroy a session
+func createSession(w http.ResponseWriter) (*models.Session, error) {
+	sessionID := generateSessionID()
+	session := &models.Session{
+		ID:        sessionID,
+		Data:      make(map[string]interface{}),
+		CreatedAt: time.Now(),
+		ExpiresAt: time.Now().Add(sessionDuration),
+	}
+
+	sessionStore.Lock()
+	sessionStore.sessions[sessionID] = session
+	sessionStore.Unlock()
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     sessionCookieName,
+		Value:    sessionID,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+		Expires:  session.ExpiresAt,
+	})
+
+	return session, nil
+}
+
 func DestroySession(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session_id")
+	cookie, err := r.Cookie(sessionCookieName)
 	if err == nil && cookie.Value != "" {
 		sessionStore.Lock()
 		delete(sessionStore.sessions, cookie.Value)
 		sessionStore.Unlock()
 
 		http.SetCookie(w, &http.Cookie{
-			Name:   "session_id",
-			Value:  "",
-			Path:   "/",
-			MaxAge: -1, // Delete the cookie
+			Name:     sessionCookieName,
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteStrictMode,
+			MaxAge:   -1,
 		})
 	}
+}
+
+func SetUserID(session *models.Session, userID int) {
+	session.UserID = userID
+}
+
+func GetUserID(session *models.Session) int {
+	return session.UserID
 }

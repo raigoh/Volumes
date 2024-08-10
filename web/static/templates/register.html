@@ -2,6 +2,9 @@
 <div class="register-page">
   <div class="register-container">
     <h1>Register</h1>
+    {{if .Error}}
+    <div class="error">{{.Error}}</div>
+    {{end}}
     <form action="/register" method="post">
       <div class="form-group">
         <label for="username">Username:</label>

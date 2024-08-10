@@ -3,32 +3,23 @@ package main
 import (
 	"fmt"
 	"literary-lions-forum/internal/auth"
-	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
+	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
 	"os"
 )
 
-// Handlers for different routes
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	// Redirect to login page
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
-}
-
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "base.html", models.PageData{
-		Title: "Login - Literary Lions Forum",
-		Page:  "login",
-	})
-}
-
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "base.html", models.PageData{
-		Title: "Register - Literary Lions Forum",
-		Page:  "register",
-	})
+func requireAuth(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sess, err := session.GetSession(w, r)
+		if err != nil || session.GetUserID(sess) == 0 {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
 }
 
 func main() {
@@ -48,8 +39,13 @@ func main() {
 	}
 	defer database.DB.Close()
 
-	// Set up your routes
-	http.HandleFunc("/", homeHandler) // Handle root path
+	database.VerifyDatabaseContents()
+
+	// Set up routes
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	})
+	http.HandleFunc("/home", requireAuth(auth.HomeHandler))
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 	http.HandleFunc("/logout", auth.LogoutHandler)
@@ -60,7 +56,7 @@ func main() {
 	}
 
 	fmt.Println("Server is running on http://localhost:" + port)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Server failed to start:", err)
 	}
 }
