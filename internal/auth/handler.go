@@ -77,30 +77,30 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		username := r.FormValue("username")
+		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		log.Printf("Attempting login for username: %s", username)
+		log.Printf("Attempting login for email: %s", email)
 
-		if username == "" || password == "" {
-			log.Println("Username or password is empty")
+		if email == "" || password == "" {
+			log.Println("Email or password is empty")
 			utils.RenderTemplate(w, "base.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
-				Error: "Username and password are required",
+				Error: "Email and password are required",
 			})
 			return
 		}
 
 		var dbPassword string
 		var userID int
-		err = database.DB.QueryRow("SELECT id, password FROM users WHERE username = ?", username).Scan(&userID, &dbPassword)
+		err = database.DB.QueryRow("SELECT id, password FROM users WHERE email = ?", email).Scan(&userID, &dbPassword)
 		if err != nil {
 			log.Printf("Error querying user: %v", err)
 			utils.RenderTemplate(w, "base.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
-				Error: "Invalid username or password",
+				Error: "Invalid email or password",
 			})
 			return
 		}
@@ -111,7 +111,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			utils.RenderTemplate(w, "base.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
-				Error: "Invalid username or password",
+				Error: "Invalid email or password",
 			})
 			return
 		}

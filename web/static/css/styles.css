@@ -94,7 +94,7 @@ html {
   margin-bottom: 1.5rem;
 }
 
-.login-template .login-form input[type="text"],
+.login-template .login-form input[type="email"],
 .login-template .login-form input[type="password"] {
   width: 90%;
   padding: 0.75rem 1rem;
