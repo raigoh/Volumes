@@ -236,7 +236,7 @@ html {
 .register-page input[type="text"],
 .register-page input[type="email"],
 .register-page input[type="password"] {
-  width: 100%;
+  width: 95%;
   padding: 0.5rem;
   border: none;
   border-radius: 5px;

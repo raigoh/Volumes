@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"literary-lions-forum/internal/auth"
 	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/utils"
+	"literary-lions-forum/pkg/database"
 	"log"
 	"net/http"
 	"os"
@@ -39,10 +41,18 @@ func main() {
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
+	// Initialize database
+	err := database.InitDB()
+	if err != nil {
+		log.Fatal("Failed to initialize database:", err)
+	}
+	defer database.DB.Close()
+
 	// Set up your routes
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/register", registerHandler)
+	http.HandleFunc("/", homeHandler) // Handle root path
+	http.HandleFunc("/register", auth.RegisterHandler)
+	http.HandleFunc("/login", auth.LoginHandler)
+	http.HandleFunc("/logout", auth.LogoutHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
