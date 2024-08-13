@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"literary-lions-forum/internal/models"
 	"log"
 	"os"
 
@@ -130,6 +129,7 @@ func VerifyDatabaseContents() {
 		log.Printf("ID: %d, Username: %s, Email: %s", id, username, email)
 	}
 }
+<<<<<<< HEAD
 
 func GetLatestPosts(limit int) ([]models.Post, error) {
 	posts := []models.Post{}
@@ -182,3 +182,5 @@ func GetPopularCategories(limit int) ([]models.Category, error) {
 
 	return categories, nil
 }
+=======
+>>>>>>> 562bb40ca932d022e49e322af96ce97d0695df59

@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/models"
+	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
 	"literary-lions-forum/pkg/session"
@@ -138,13 +140,13 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	latestPosts, err := database.GetLatestPosts(5)
+	latestPosts, err := post.GetLatestPosts(5)
 	if err != nil {
 		log.Printf("Error fetching latest posts: %v", err)
 		latestPosts = []models.Post{}
 	}
 
-	popularCategories, err := database.GetPopularCategories(5)
+	popularCategories, err := category.GetPopularCategories(5)
 	if err != nil {
 		log.Printf("Error fetching popular categories: %v", err)
 		popularCategories = []models.Category{}

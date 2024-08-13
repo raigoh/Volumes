@@ -33,6 +33,8 @@ type Post struct {
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	User      User
+	Category  Category
 }
 
 type Comment struct {
@@ -42,6 +44,7 @@ type Comment struct {
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	User      User
 }
 
 type Like struct {
@@ -60,8 +63,12 @@ type PostCategory struct {
 
 // PageData holds data to be passed to the templates
 type PageData struct {
-	Title string
-	Page  string
-	Error string
-	Data  map[string]interface{}
+	Title      string
+	Page       string
+	Error      string
+	Data       map[string]interface{}
+	User       *User
+	Post       *Post
+	Comments   []Comment
+	Categories []Category
 }
