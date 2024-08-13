@@ -26,7 +26,7 @@
 
   <div class="add-comment">
     <h3>Add a Comment</h3>
-    <form action="/post/{{.Post.ID}}/comment" method="POST">
+    <form action="/post/comment/{{.Post.ID}}" method="POST">
       <textarea name="content" rows="4" required></textarea>
       <button type="submit" class="submit-button">Post Comment</button>
     </form>

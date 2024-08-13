@@ -31,6 +31,7 @@ func GetCommentsByPostID(postID int) ([]models.Comment, error) {
 }
 
 func CreateComment(userID, postID int, content string) error {
+	//fmt.Println("New comment to ", postID, " from ", userID, " with content: ", content)
 	_, err := database.DB.Exec("INSERT INTO comments (user_id, post_id, content) VALUES (?, ?, ?)", userID, postID, content)
 	return err
 }

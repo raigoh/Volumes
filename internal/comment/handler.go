@@ -49,6 +49,9 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
+
+	//fmt.Println("Comment handler?")
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

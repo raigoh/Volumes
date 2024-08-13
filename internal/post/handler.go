@@ -1,6 +1,7 @@
 package post
 
 import (
+	"fmt"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
 	"literary-lions-forum/internal/models"
@@ -77,6 +78,8 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error fetching categories", http.StatusInternalServerError)
 			return
 		}
+
+		fmt.Println("Got new post..")
 
 		utils.RenderTemplate(w, "base.html", models.PageData{
 			Title:      "Create New Post - Literary Lions Forum",
