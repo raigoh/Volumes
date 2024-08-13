@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"literary-lions-forum/internal/auth"
+	"literary-lions-forum/internal/category"
+	"literary-lions-forum/internal/comment"
+	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
 	"literary-lions-forum/pkg/session"
@@ -39,6 +42,12 @@ func main() {
 	}
 	defer database.DB.Close()
 
+	// Insert initial categories
+	err = category.InsertInitialCategories()
+	if err != nil {
+		log.Printf("Failed to insert initial categories: %v", err)
+	}
+
 	database.VerifyDatabaseContents()
 
 	// Set up routes
@@ -49,6 +58,9 @@ func main() {
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 	http.HandleFunc("/logout", auth.LogoutHandler)
+	http.HandleFunc("/new-post", requireAuth(post.NewPostHandler))
+	http.HandleFunc("/post/", requireAuth(post.PostDetailHandler))
+	http.HandleFunc("/post/comment", requireAuth(comment.AddCommentHandler))
 
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -1,0 +1,35 @@
+{{define "post-detail"}}
+<div class="post-detail-template">
+  <div class="post">
+    <h1>{{.Post.Title}}</h1>
+    <div class="post-meta">
+      by {{.Post.User.Username}} | {{.Post.CreatedAt.Format "2006-01-02 15:04"}}
+      | Category:
+      <a href="/category/{{.Post.Category.ID}}">{{.Post.Category.Name}}</a>
+    </div>
+    <div class="post-content">{{.Post.Content}}</div>
+  </div>
+
+  <div class="comments-section">
+    <h2>Comments</h2>
+    {{range .Comments}}
+    <div class="comment">
+      <div class="comment-meta">
+        {{.User.Username}} | {{.CreatedAt.Format "2006-01-02 15:04"}}
+      </div>
+      <div class="comment-content">{{.Content}}</div>
+    </div>
+    {{else}}
+    <p>No comments yet.</p>
+    {{end}}
+  </div>
+
+  <div class="add-comment">
+    <h3>Add a Comment</h3>
+    <form action="/post/{{.Post.ID}}/comment" method="POST">
+      <textarea name="content" rows="4" required></textarea>
+      <button type="submit" class="submit-button">Post Comment</button>
+    </form>
+  </div>
+</div>
+{{end}}

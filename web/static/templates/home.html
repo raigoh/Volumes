@@ -10,9 +10,11 @@
             {{range .Data.LatestPosts}}
             <li>
               <a href="/post/{{.ID}}">{{.Title}}</a>
-              <span class="meta"
-                >by {{.UserID}} | {{.CreatedAt.Format "2006-01-02"}}</span
-              >
+              <span class="meta">
+                by {{.User.Username}} | {{.CreatedAt.Format "2006-01-02"}} |
+                Category:
+                <a href="/category/{{.Category.ID}}">{{.Category.Name}}</a>
+              </span>
             </li>
             {{else}}
             <li>No recent posts</li>
@@ -32,7 +34,7 @@
       </div>
       <div class="cta-container">
         <!-- TODO: Later remove /home and add it with /new-post -->
-        <a href="/home" class="cta-button">Start a New Discussion</a>
+        <a href="/new-post" class="cta-button">Start a New Discussion</a>
       </div>
     </div>
   </div>
