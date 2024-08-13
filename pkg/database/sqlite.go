@@ -133,7 +133,7 @@ func VerifyDatabaseContents() {
 
 func GetLatestPosts(limit int) ([]models.Post, error) {
 	posts := []models.Post{}
-	query := `SELECT id, user_id, title, content, created_at, updated_at 
+	query := `SELECT id, user_id, title, content, created_at, created_at 
               FROM posts 
               ORDER BY created_at DESC 
               LIMIT ?`
