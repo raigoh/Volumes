@@ -60,7 +60,7 @@ func main() {
 	http.HandleFunc("/logout", auth.LogoutHandler)
 	http.HandleFunc("/new-post", requireAuth(post.NewPostHandler))
 	http.HandleFunc("/post/", requireAuth(post.PostDetailHandler))
-	http.HandleFunc("/post/comment", requireAuth(comment.AddCommentHandler))
+	http.HandleFunc("/comment", requireAuth(comment.AddCommentHandler))
 
 	port := os.Getenv("PORT")
 	if port == "" {
