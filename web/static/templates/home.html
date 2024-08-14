@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="/static/css/home.css" />
   </head>
   <body>
-    <main>
-      <div class="home-template">
+    <div class="home-template">
+      <header class="site-header">
+        <div class="header-content">
+          <h1>Literary Lions Forum</h1>
+          <nav>
+            <a href="/logout" class="logout-button">Logout</a>
+          </nav>
+        </div>
+      </header>
+      <main>
         <div class="home-container">
           <div class="home-content">
-            <h1>Welcome to Literary Lions Forum</h1>
+            <h2>Welcome to Literary Lions Forum</h2>
             <div class="forum-sections">
               <div class="section">
-                <h2>Latest Discussions</h2>
+                <h3>Latest Discussions</h3>
                 <ul>
                   {{range .Data.LatestPosts}}
                   <li>
@@ -33,7 +41,7 @@
                 </ul>
               </div>
               <div class="section">
-                <h2>Popular Categories</h2>
+                <h3>Popular Categories</h3>
                 <ul>
                   {{range .Data.PopularCategories}}
                   <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
@@ -44,15 +52,14 @@
               </div>
             </div>
             <div class="cta-container">
-              <!-- TODO: Later remove /home and add it with /new-post -->
               <a href="/new-post" class="cta-button">Start a New Discussion</a>
             </div>
           </div>
         </div>
-        <footer>
-          <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
-        </footer>
-      </div>
-    </main>
+      </main>
+      <footer>
+        <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
+      </footer>
+    </div>
   </body>
 </html>
