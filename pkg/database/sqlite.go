@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"literary-lions-forum/internal/models"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -38,7 +38,8 @@ func createTables() error {
 		username TEXT UNIQUE NOT NULL,
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		is_admin BOOLEAN DEFAULT FALSE
 	);`
 
 	createPostsTable := `
@@ -109,23 +110,45 @@ func createTables() error {
 	return nil
 }
 
-func VerifyDatabaseContents() {
+// DeleteUser deletes a user from the database by their ID
+func DeleteUser(userID int) error {
+	_, err := DB.Exec("DELETE FROM users WHERE id = ?", userID)
+	if err != nil {
+		return fmt.Errorf("error deleting user: %v", err)
+	}
+	return nil
+}
+
+// DeleteUserByEmail deletes a user from the database by their email
+func DeleteUserByEmail(email string) error {
+	_, err := DB.Exec("DELETE FROM users WHERE email = ?", email)
+	if err != nil {
+		return fmt.Errorf("error deleting user by email: %v", err)
+	}
+	return nil
+}
+
+// ListUsers returns all users in the database
+func ListUsers() ([]models.User, error) {
 	rows, err := DB.Query("SELECT id, username, email FROM users")
 	if err != nil {
-		log.Printf("Error querying users: %v", err)
-		return
+		return nil, fmt.Errorf("error querying users: %v", err)
 	}
 	defer rows.Close()
 
-	log.Println("Users in the database:")
+	var users []models.User
 	for rows.Next() {
-		var id int
-		var username, email string
-		err := rows.Scan(&id, &username, &email)
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Username, &user.Email)
 		if err != nil {
-			log.Printf("Error scanning row: %v", err)
-			continue
+			return nil, fmt.Errorf("error scanning user row: %v", err)
 		}
-		log.Printf("ID: %d, Username: %s, Email: %s", id, username, email)
+		users = append(users, user)
 	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating user rows: %v", err)
+	}
+
+	return users, nil
 }

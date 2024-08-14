@@ -6,24 +6,13 @@ import (
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
 	"literary-lions-forum/internal/post"
+	"literary-lions-forum/internal/user"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
-	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
 	"os"
 )
-
-func requireAuth(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		sess, err := session.GetSession(w, r)
-		if err != nil || session.GetUserID(sess) == 0 {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		next.ServeHTTP(w, r)
-	}
-}
 
 func main() {
 	// Initialize templates
@@ -48,19 +37,18 @@ func main() {
 		log.Printf("Failed to insert initial categories: %v", err)
 	}
 
-	database.VerifyDatabaseContents()
-
 	// Set up routes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	})
-	http.HandleFunc("/home", requireAuth(auth.HomeHandler))
+	http.HandleFunc("/home", auth.RequireAuth(auth.HomeHandler))
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 	http.HandleFunc("/logout", auth.LogoutHandler)
-	http.HandleFunc("/new-post", requireAuth(post.NewPostHandler))
-	http.HandleFunc("/post/", requireAuth(post.PostDetailHandler))
-	http.HandleFunc("/comment", requireAuth(comment.AddCommentHandler))
+	http.HandleFunc("/new-post", auth.RequireAuth(post.NewPostHandler))
+	http.HandleFunc("/post/", auth.RequireAuth(post.PostDetailHandler))
+	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler))
+	http.HandleFunc("/admin/users", auth.RequireAuth(user.UserManagementHandler))
 
 	port := os.Getenv("PORT")
 	if port == "" {

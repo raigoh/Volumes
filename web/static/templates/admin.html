@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management - Literary Lions Forum</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body class="user-management-template">
+    <h1>User Management</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Users}}
+        <tr>
+          <td>{{.ID}}</td>
+          <td>{{.Username}}</td>
+          <td>{{.Email}}</td>
+          <td>
+            <form action="/admin/users" method="POST">
+              <input type="hidden" name="user_id" value="{{.ID}}" />
+              <input type="hidden" name="action" value="delete" />
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </body>
+</html>

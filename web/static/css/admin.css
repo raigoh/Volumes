@@ -1,0 +1,107 @@
+/* General styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* User Management Template Styles */
+.user-management-template {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1e0639 0%, #3a0f6b 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-management-template::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      white,
+      rgba(255, 255, 255, 0.2) 2px,
+      transparent 3px
+    ),
+    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+    radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 100px 100px, 70px 70px, 50px 50px;
+  background-position: 0 0, 30px 30px, 50px 50px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.user-management-template h1 {
+  color: #ffd700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.user-management-template table {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border-collapse: collapse;
+}
+
+.user-management-template th,
+.user-management-template td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-management-template th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.user-management-template tr:last-child td {
+  border-bottom: none;
+}
+
+.user-management-template tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.user-management-template button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 25px;
+  background: #8e44ad;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.user-management-template button:hover {
+  background: #9b59b6;
+  transform: scale(1.05);
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50px);
+  }
+}
