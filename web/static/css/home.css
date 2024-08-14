@@ -1,0 +1,122 @@
+/* General styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Home template styles */
+.home-template {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #2a0845 0%, #6441a5 100%);
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.home-template .home-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.home-template .home-content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 1200px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-template h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.home-template .forum-sections {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  overflow: hidden;
+}
+
+.home-template .section {
+  width: 48%;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.home-template h2 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.home-template ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.home-template li {
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.home-template a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.home-template a:hover {
+  color: #ffd700;
+}
+
+.home-template .meta {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.home-template .cta-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.home-template .cta-button {
+  display: inline-block;
+  background-color: #ffd700;
+  color: #2a0845;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.home-template .cta-button:hover {
+  background-color: #ffec8b;
+  transform: scale(1.05);
+}
+
+.home-template footer {
+  text-align: center;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.home-template footer p {
+  margin: 0;
+  font-size: 0.8rem;
+}

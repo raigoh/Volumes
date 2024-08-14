@@ -15,7 +15,7 @@ import (
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		utils.RenderTemplate(w, "base.html", models.PageData{
+		utils.RenderTemplate(w, "register.html", models.PageData{
 			Title: "Register - Literary Lions Forum",
 			Page:  "register",
 		})
@@ -28,7 +28,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		if username == "" || email == "" || password == "" {
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "register.html", models.PageData{
 				Title: "Register - Literary Lions Forum",
 				Page:  "register",
 				Error: "All fields are required",
@@ -39,7 +39,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
 			log.Printf("Error hashing password: %v", err)
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "register.html", models.PageData{
 				Title: "Register - Literary Lions Forum",
 				Page:  "register",
 				Error: "Error creating user",
@@ -50,7 +50,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		_, err = database.DB.Exec("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, hashedPassword)
 		if err != nil {
 			log.Printf("Error inserting user into database: %v", err)
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "register.html", models.PageData{
 				Title: "Register - Literary Lions Forum",
 				Page:  "register",
 				Error: "Error creating user: " + err.Error(),
@@ -64,7 +64,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		utils.RenderTemplate(w, "base.html", models.PageData{
+		utils.RenderTemplate(w, "login.html", models.PageData{
 			Title: "Login - Literary Lions Forum",
 			Page:  "login",
 		})
@@ -86,7 +86,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if email == "" || password == "" {
 			log.Println("Email or password is empty")
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "login.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
 				Error: "Email and password are required",
@@ -99,7 +99,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err = database.DB.QueryRow("SELECT id, password FROM users WHERE email = ?", email).Scan(&userID, &dbPassword)
 		if err != nil {
 			log.Printf("Error querying user: %v", err)
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "login.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
 				Error: "Invalid email or password",
@@ -110,7 +110,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 		if err != nil {
 			log.Printf("Password mismatch for user %d: %v", userID, err)
-			utils.RenderTemplate(w, "base.html", models.PageData{
+			utils.RenderTemplate(w, "login.html", models.PageData{
 				Title: "Login - Literary Lions Forum",
 				Page:  "login",
 				Error: "Invalid email or password",
@@ -161,7 +161,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	utils.RenderTemplate(w, "base.html", pageData)
+	utils.RenderTemplate(w, "home.html", pageData)
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

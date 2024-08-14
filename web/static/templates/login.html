@@ -1,25 +1,43 @@
-{{define "login"}}
-<div class="login-template">
-  <div class="login-container">
-    <h1>Login</h1>
-    <form class="login-form" method="POST" action="/login">
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <div class="options">
-        <label><input type="checkbox" name="remember" /> Remember me</label>
-        <a href="#">Forgot password?</a>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/login.css" />
+  </head>
+  <body>
+    <main>
+      <div class="login-template">
+        <div class="login-container">
+          <h1>Login</h1>
+          <form class="login-form" method="POST" action="/login">
+            <input type="email" name="email" placeholder="Email" required />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <div class="options">
+              <label
+                ><input type="checkbox" name="remember" /> Remember me</label
+              >
+              <a href="#">Forgot password?</a>
+            </div>
+            <button type="submit">Login</button>
+            <div class="register">
+              Don't have an account? <a href="/register">Register</a>
+            </div>
+          </form>
+          {{if .Error}}
+          <div class="error">{{.Error}}</div>
+          {{end}}
+        </div>
+        <footer>
+          <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
+        </footer>
       </div>
-      <button type="submit">Login</button>
-      <div class="register">
-        Don't have an account? <a href="/register">Register</a>
-      </div>
-    </form>
-    {{if .Error}}
-    <div class="error">{{.Error}}</div>
-    {{end}}
-  </div>
-  <footer>
-    <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
-  </footer>
-</div>
-{{end}}
+    </main>
+  </body>
+</html>

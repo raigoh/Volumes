@@ -1,0 +1,139 @@
+/* General styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Register template styles */
+.register-page {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1e0639 0%, #3a0f6b 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Starry night background */
+.register-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      white,
+      rgba(255, 255, 255, 0.2) 2px,
+      transparent 4px
+    ),
+    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 3px),
+    radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 2px);
+  background-size: 200px 200px, 140px 140px, 100px 100px;
+  background-position: 0 0, 40px 60px, 130px 270px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50px);
+  }
+}
+
+.register-page .register-container {
+  background: rgba(44, 20, 69, 0.8);
+  padding: 2rem;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.register-page h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.register-page .form-group {
+  margin-bottom: 1rem;
+}
+
+.register-page label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b8a3d3;
+}
+
+.register-page input[type="text"],
+.register-page input[type="email"],
+.register-page input[type="password"] {
+  width: 95%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.register-page input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.register-page button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  background: #8e44ad;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.register-page button[type="submit"]:hover {
+  background: #9b59b6;
+}
+
+.register-page p {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.register-page a {
+  color: #b8a3d3;
+  text-decoration: none;
+}
+
+.register-page a:hover {
+  text-decoration: underline;
+}
+
+.register-page footer {
+  text-align: center;
+  color: #b8a3d3;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background: rgba(30, 12, 47, 0.8);
+}

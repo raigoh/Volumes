@@ -1,0 +1,111 @@
+/* General styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* New Post Template Styles */
+.new-post-template {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1e0639 0%, #3a0f6b 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.new-post-template h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffd700;
+}
+
+.new-post-template form {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+.new-post-template .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.new-post-template label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b8a3d3;
+}
+
+.new-post-template input[type="text"],
+.new-post-template select,
+.new-post-template textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1rem;
+}
+
+.new-post-template input::placeholder,
+.new-post-template textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.new-post-template select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
+.new-post-template select option {
+  background-color: #3a0f6b;
+  color: white;
+}
+
+.new-post-template textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 300px;
+}
+
+.new-post-template .submit-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 25px;
+  background: #8e44ad;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.new-post-template .submit-button:hover {
+  background: #9b59b6;
+  transform: scale(1.05);
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50px);
+  }
+}

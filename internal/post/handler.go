@@ -16,7 +16,7 @@ import (
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		utils.RenderTemplate(w, "base.html", models.PageData{
+		utils.RenderTemplate(w, "new-post.html", models.PageData{
 			Title: "Create Post - Literary Lions Forum",
 			Page:  "create_post",
 		})
@@ -81,7 +81,7 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("Got new post..")
 
-		utils.RenderTemplate(w, "base.html", models.PageData{
+		utils.RenderTemplate(w, "new-post.html", models.PageData{
 			Title:      "Create New Post - Literary Lions Forum",
 			Page:       "new-post",
 			Categories: categories,
@@ -143,7 +143,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RenderTemplate(w, "base.html", models.PageData{
+	utils.RenderTemplate(w, "post-detail.html", models.PageData{
 		Title:    post.Title + " - Literary Lions Forum",
 		Page:     "post-detail",
 		Post:     &post,
