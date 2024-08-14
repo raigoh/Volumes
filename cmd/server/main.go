@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	admin "literary-lions-forum/internal/Admin"
 	"literary-lions-forum/internal/auth"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
+	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/post"
-	"literary-lions-forum/internal/user"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
 	"log"
@@ -48,7 +49,8 @@ func main() {
 	http.HandleFunc("/new-post", auth.RequireAuth(post.NewPostHandler))
 	http.HandleFunc("/post/", auth.RequireAuth(post.PostDetailHandler))
 	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler))
-	http.HandleFunc("/admin/users", auth.RequireAuth(user.UserManagementHandler))
+	http.HandleFunc("/admin/users", auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler)))
+	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(adminDashboardHandler)))
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -59,4 +61,11 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Server failed to start:", err)
 	}
+}
+
+func adminDashboardHandler(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, "admin-dashboard.html", models.PageData{
+		Title: "Admin Dashboard - Literary Lions Forum",
+		Page:  "admin-dashboard",
+	})
 }

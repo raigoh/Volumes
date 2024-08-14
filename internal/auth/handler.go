@@ -96,7 +96,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		var dbPassword string
 		var userID int
-		err = database.DB.QueryRow("SELECT id, password FROM users WHERE email = ?", email).Scan(&userID, &dbPassword)
+		var isAdmin bool
+		err = database.DB.QueryRow("SELECT id, password, is_admin FROM users WHERE email = ?", email).Scan(&userID, &dbPassword, &isAdmin)
 		if err != nil {
 			log.Printf("Error querying user: %v", err)
 			utils.RenderTemplate(w, "login.html", models.PageData{
@@ -126,13 +127,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		session.SetUserID(sess, userID)
+		session.SetIsAdmin(sess, isAdmin)
 
 		// After successful login
-		log.Printf("Login successful for user ID: %d", userID)
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		log.Printf("Login successful for user ID: %d, Admin: %v", userID, isAdmin)
+
+		if isAdmin {
+			http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		} else {
+			http.Redirect(w, r, "/home", http.StatusSeeOther)
+		}
 	}
 }
-
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GetSession(w, r)
 	if err != nil || session.GetUserID(sess) == 0 {

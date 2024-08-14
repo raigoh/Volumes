@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Literary Lions Forum</title>
+    <link rel="stylesheet" href="/static/css/admin-dashboard.css" />
+  </head>
+  <body class="admin-dashboard-template">
+    <header>
+      <h1>Admin Dashboard</h1>
+      <nav>
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="dashboard-stats">
+        <h2>Forum Statistics</h2>
+        <ul>
+          <li>Total Users: {{.TotalUsers}}</li>
+          <li>Total Posts: {{.TotalPosts}}</li>
+          <li>Total Comments: {{.TotalComments}}</li>
+          <li>Active Users (last 30 days): {{.ActiveUsers}}</li>
+        </ul>
+      </section>
+
+      <section class="admin-actions">
+        <h2>Administrative Actions</h2>
+        <ul>
+          <li><a href="/admin/users">Manage Users</a></li>
+          <li><a href="/admin/posts">Manage Posts</a></li>
+          <li><a href="/admin/comments">Manage Comments</a></li>
+          <li><a href="/admin/categories">Manage Categories</a></li>
+        </ul>
+      </section>
+
+      <section class="recent-activity">
+        <h2>Recent Activity</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>User</th>
+              <th>Content</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .RecentActivity}}
+            <tr>
+              <td>{{.Type}}</td>
+              <td>{{.Username}}</td>
+              <td>{{.Content}}</td>
+              <td>{{.Date}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

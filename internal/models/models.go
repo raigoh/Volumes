@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	ID        int64
+	ID        string
 	Username  string
 	Email     string
 	Password  string // Hashed password
@@ -63,12 +63,25 @@ type PostCategory struct {
 
 // PageData holds data to be passed to the templates
 type PageData struct {
-	Title      string
-	Page       string
-	Error      string
-	Data       map[string]interface{}
-	User       *User
-	Post       *Post
-	Comments   []Comment
-	Categories []Category
+	Title          string
+	Page           string
+	Error          string
+	Data           map[string]interface{}
+	User           *User
+	Post           *Post
+	Comments       []Comment
+	Categories     []Category
+	TotalUsers     int
+	TotalPosts     int
+	TotalComments  int
+	ActiveUsers    int
+	RecentActivity []Activity
+	Users          []User
+}
+
+type Activity struct {
+	Type     string
+	Username string
+	Content  string
+	Date     string
 }

@@ -99,3 +99,12 @@ func SetUserID(session *models.Session, userID int) {
 func GetUserID(session *models.Session) int {
 	return session.UserID
 }
+
+func SetIsAdmin(session *models.Session, isAdmin bool) {
+	session.Data["isAdmin"] = isAdmin
+}
+
+func GetIsAdmin(session *models.Session) bool {
+	isAdmin, ok := session.Data["isAdmin"].(bool)
+	return ok && isAdmin
+}

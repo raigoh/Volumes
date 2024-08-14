@@ -1,0 +1,213 @@
+/* General styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Admin Dashboard Template Styles */
+.admin-dashboard-template {
+  background: linear-gradient(135deg, #1e0639 0%, #3a0f6b 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-dashboard-template::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      white,
+      rgba(255, 255, 255, 0.2) 2px,
+      transparent 3px
+    ),
+    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+    radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 100px 100px, 70px 70px, 50px 50px;
+  background-position: 0 0, 30px 30px, 50px 50px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50px);
+  }
+}
+
+/* Header Styles */
+.admin-dashboard-template header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-dashboard-template h1 {
+  color: #ffd700;
+  margin: 0;
+}
+
+.admin-dashboard-template nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.admin-dashboard-template nav li {
+  margin-left: 1rem;
+}
+
+.admin-dashboard-template nav a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.admin-dashboard-template nav a:hover {
+  color: #ffd700;
+}
+
+/* Main Content Styles */
+.admin-dashboard-template main {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.admin-dashboard-template section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  flex: 1;
+  min-width: 300px;
+}
+
+.admin-dashboard-template h2 {
+  color: #ffd700;
+  margin-top: 0;
+}
+
+/* Dashboard Stats Styles */
+.admin-dashboard-template .dashboard-stats ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.admin-dashboard-template .dashboard-stats li {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Admin Actions Styles */
+.admin-dashboard-template .admin-actions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.admin-dashboard-template .admin-actions li {
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard-template .admin-actions a {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  background: #8e44ad;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.admin-dashboard-template .admin-actions a:hover {
+  background: #9b59b6;
+  transform: scale(1.05);
+}
+
+/* Recent Activity Styles */
+.admin-dashboard-template .recent-activity {
+  overflow-x: auto;
+}
+
+.admin-dashboard-template table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-dashboard-template th,
+.admin-dashboard-template td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-dashboard-template th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.admin-dashboard-template tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-dashboard-template tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Footer Styles */
+.admin-dashboard-template footer {
+  background: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-dashboard-template header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-dashboard-template nav {
+    margin-top: 1rem;
+  }
+
+  .admin-dashboard-template nav ul {
+    flex-direction: column;
+  }
+
+  .admin-dashboard-template nav li {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-dashboard-template main {
+    flex-direction: column;
+  }
+
+  .admin-dashboard-template section {
+    min-width: auto;
+  }
+}
