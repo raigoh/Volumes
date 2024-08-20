@@ -6,27 +6,36 @@ import (
 )
 
 func GetLatestPosts(limit int) ([]models.Post, error) {
-	posts := []models.Post{}
-	query := `SELECT id, user_id, title, content, created_at, updated_at 
-              FROM posts 
-              ORDER BY created_at DESC 
-              LIMIT ?`
-
+	query := `
+			SELECT p.id, p.title, p.created_at, 
+						 u.id AS user_id, u.username,
+						 c.id AS category_id, c.name AS category_name
+			FROM posts p
+			JOIN users u ON p.user_id = u.id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
+			ORDER BY p.created_at DESC
+			LIMIT ?
+	`
 	rows, err := database.DB.Query(query, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	var posts []models.Post
 	for rows.Next() {
-		var post models.Post
-		err := rows.Scan(&post.ID, &post.UserID, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt)
+		var p models.Post
+		err := rows.Scan(
+			&p.ID, &p.Title, &p.CreatedAt,
+			&p.User.ID, &p.User.Username,
+			&p.Category.ID, &p.Category.Name,
+		)
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, post)
+		posts = append(posts, p)
 	}
-
 	return posts, nil
 }
 
@@ -49,16 +58,25 @@ func CreatePost(userID, categoryID int, title, content string) (int, error) {
 	return int(postID), nil
 }
 
-func GetPostByID(postID int) (models.Post, error) {
+func GetPostByID(id int) (models.Post, error) {
 	var post models.Post
-	err := database.DB.QueryRow(`
-		SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username, c.id, c.name
-		FROM posts p
-		JOIN users u ON p.user_id = u.id
-		JOIN post_categories pc ON p.id = pc.post_id
-		JOIN categories c ON pc.category_id = c.id
-		WHERE p.id = ?`, postID).Scan(
-		&post.ID, &post.UserID, &post.Title, &post.Content, &post.CreatedAt,
-		&post.User.Username, &post.Category.ID, &post.Category.Name)
-	return post, err
+	query := `
+			SELECT p.id, p.title, p.content, p.created_at, p.updated_at, 
+						 u.id AS user_id, u.username,
+						 c.id AS category_id, c.name AS category_name
+			FROM posts p
+			JOIN users u ON p.user_id = u.id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
+			WHERE p.id = ?
+	`
+	err := database.DB.QueryRow(query, id).Scan(
+		&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt,
+		&post.User.ID, &post.User.Username,
+		&post.Category.ID, &post.Category.Name,
+	)
+	if err != nil {
+		return post, err
+	}
+	return post, nil
 }

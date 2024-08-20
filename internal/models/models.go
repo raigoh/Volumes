@@ -22,13 +22,13 @@ type Session struct {
 }
 
 type Category struct {
-	ID   int64
+	ID   int
 	Name string
 }
 
 type Post struct {
-	ID        int64
-	UserID    int64
+	ID        int
+	UserID    int
 	Title     string
 	Content   string
 	CreatedAt time.Time
@@ -38,9 +38,9 @@ type Post struct {
 }
 
 type Comment struct {
-	ID        int64
-	PostID    int64
-	UserID    int64
+	ID        int
+	PostID    int
+	UserID    int
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -48,17 +48,17 @@ type Comment struct {
 }
 
 type Like struct {
-	ID         int64
-	UserID     int64
-	TargetID   int64
+	ID         int
+	UserID     int
+	TargetID   int
 	TargetType string // "post" or "comment"
 	IsLike     bool   // true for like, false for dislike
 	CreatedAt  time.Time
 }
 
 type PostCategory struct {
-	PostID     int64
-	CategoryID int64
+	PostID     int
+	CategoryID int
 }
 
 // PageData holds data to be passed to the templates
