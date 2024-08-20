@@ -18,6 +18,7 @@
           <div class="form-group">
             <label for="category">Category:</label>
             <select id="category" name="category" required>
+              <option value="">Select a category</option>
               {{range .Categories}}
               <option value="{{.ID}}">{{.Name}}</option>
               {{end}}
