@@ -80,3 +80,65 @@ func GetPostByID(id int) (models.Post, error) {
 	}
 	return post, nil
 }
+
+func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
+	query := `
+		SELECT DISTINCT p.id, p.title, p.created_at, 
+			u.id AS user_id, u.username,
+			c.id AS category_id, c.name AS category_name
+		FROM posts p
+		JOIN users u ON p.user_id = u.id
+		LEFT JOIN post_categories pc ON p.id = pc.post_id
+		LEFT JOIN categories c ON pc.category_id = c.id
+	`
+
+	var args []interface{}
+	var conditions []string
+
+	if categoryID > 0 {
+		conditions = append(conditions, "c.id = ?")
+		args = append(args, categoryID)
+	}
+
+	if userID > 0 {
+		conditions = append(conditions, "p.user_id = ?")
+		args = append(args, userID)
+	}
+
+	if likedOnly {
+		query += " LEFT JOIN likes l ON p.id = l.post_id"
+		conditions = append(conditions, "l.user_id = ? AND l.is_like = TRUE")
+		args = append(args, userID)
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + conditions[0]
+		for _, condition := range conditions[1:] {
+			query += " AND " + condition
+		}
+	}
+
+	query += " ORDER BY p.created_at DESC LIMIT ?"
+	args = append(args, limit)
+
+	rows, err := database.DB.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var p models.Post
+		err := rows.Scan(
+			&p.ID, &p.Title, &p.CreatedAt,
+			&p.User.ID, &p.User.Username,
+			&p.Category.ID, &p.Category.Name,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, p)
+	}
+	return posts, nil
+}

@@ -9,6 +9,7 @@ import (
 	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -153,10 +154,14 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	latestPosts, err := post.GetLatestPosts(10)
+	categoryID, _ := strconv.Atoi(r.URL.Query().Get("category"))
+	filterUserID, _ := strconv.Atoi(r.URL.Query().Get("user"))
+	likedOnly, _ := strconv.ParseBool(r.URL.Query().Get("liked"))
+
+	posts, err := post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
 	if err != nil {
-		log.Printf("Error fetching latest posts: %v", err)
-		latestPosts = []models.Post{}
+		log.Printf("Error fetching filtered posts: %v", err)
+		posts = []models.Post{}
 	}
 
 	popularCategories, err := category.GetPopularCategories(5)
@@ -165,13 +170,23 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		popularCategories = []models.Category{}
 	}
 
+	allCategories, err := category.GetCategories()
+	if err != nil {
+		log.Printf("Error fetching all categories: %v", err)
+		allCategories = []models.Category{}
+	}
+
 	pageData := models.PageData{
 		Title: "Home - Literary Lions Forum",
 		Page:  "home",
 		User:  user,
 		Data: map[string]interface{}{
-			"LatestPosts":       latestPosts,
+			"Posts":             posts,
 			"PopularCategories": popularCategories,
+			"AllCategories":     allCategories,
+			"SelectedCategory":  categoryID,
+			"FilterUserID":      filterUserID,
+			"LikedOnly":         likedOnly,
 		},
 	}
 
