@@ -39,15 +39,12 @@ func main() {
 	}
 
 	// Set up routes
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-	})
-	http.HandleFunc("/home", auth.RequireAuth(auth.HomeHandler))
+	http.HandleFunc("/", auth.HomeHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 	http.HandleFunc("/logout", auth.LogoutHandler)
 	http.HandleFunc("/new-post", auth.RequireAuth(post.NewPostHandler))
-	http.HandleFunc("/post/", auth.RequireAuth(post.PostDetailHandler))
+	http.HandleFunc("/post/", post.PostDetailHandler)
 	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler))
 	http.HandleFunc("/admin/users", auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler)))
 	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(adminDashboardHandler)))

@@ -139,14 +139,21 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	sess, err := session.GetSession(w, r)
-	if err != nil || session.GetUserID(sess) == 0 {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
+	sess, _ := session.GetSession(w, r)
+	userID := session.GetUserID(sess)
+
+	var user *models.User
+	if userID != 0 {
+		var err error
+		user, err = session.GetUserByID(userID)
+		if err != nil {
+			log.Printf("Error fetching user: %v", err)
+		}
 	}
 
-	latestPosts, err := post.GetLatestPosts(5)
+	latestPosts, err := post.GetLatestPosts(10)
 	if err != nil {
 		log.Printf("Error fetching latest posts: %v", err)
 		latestPosts = []models.Post{}
@@ -161,6 +168,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	pageData := models.PageData{
 		Title: "Home - Literary Lions Forum",
 		Page:  "home",
+		User:  user,
 		Data: map[string]interface{}{
 			"LatestPosts":       latestPosts,
 			"PopularCategories": popularCategories,
@@ -173,5 +181,5 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	// Destroy the session using the custom session package
 	session.DestroySession(w, r)
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }

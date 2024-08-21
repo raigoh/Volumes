@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"literary-lions-forum/internal/models"
+	"literary-lions-forum/pkg/database"
 	"net/http"
 	"sync"
 	"time"
@@ -28,6 +29,7 @@ func generateSessionID() string {
 func GetSession(w http.ResponseWriter, r *http.Request) (*models.Session, error) {
 	cookie, err := r.Cookie(sessionCookieName)
 	if err != nil || cookie.Value == "" {
+		// log.Println("No session cookie found, creating new session")
 		return createSession(w)
 	}
 
@@ -36,14 +38,14 @@ func GetSession(w http.ResponseWriter, r *http.Request) (*models.Session, error)
 	sessionStore.RUnlock()
 
 	if !exists || time.Now().After(session.ExpiresAt) {
+		// log.Println("Session doesn't exist or has expired, creating new session")
 		if exists {
 			DestroySession(w, r)
 		}
 		return createSession(w)
 	}
 
-	// Extend session expiration
-	session.ExpiresAt = time.Now().Add(sessionDuration)
+	// log.Printf("Retrieved existing session for user ID: %d", session.UserID)
 	return session, nil
 }
 
@@ -94,9 +96,11 @@ func DestroySession(w http.ResponseWriter, r *http.Request) {
 
 func SetUserID(session *models.Session, userID int) {
 	session.UserID = userID
+	// log.Printf("Set user ID in session: %d", userID)
 }
 
 func GetUserID(session *models.Session) int {
+	// log.Printf("Getting user ID from session: %d", session.UserID)
 	return session.UserID
 }
 
@@ -107,4 +111,13 @@ func SetIsAdmin(session *models.Session, isAdmin bool) {
 func GetIsAdmin(session *models.Session) bool {
 	isAdmin, ok := session.Data["isAdmin"].(bool)
 	return ok && isAdmin
+}
+
+func GetUserByID(userID int) (*models.User, error) {
+	var user models.User
+	err := database.DB.QueryRow("SELECT id, username, email FROM users WHERE id = ?", userID).Scan(&user.ID, &user.Username, &user.Email)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
