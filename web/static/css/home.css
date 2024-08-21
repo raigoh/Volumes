@@ -55,8 +55,8 @@ html {
 .site-header .login-button:hover,
 .site-header .register-button:hover {
   background-color: #ffec8b;
-  transform: scale(1.05);
   color: #2a0845;
+  transform: scale(1.05);
 }
 
 /* Main content styles */
@@ -115,7 +115,7 @@ html {
 }
 
 .home-template li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -134,6 +134,26 @@ html {
   opacity: 0.7;
 }
 
+.home-template .like-section {
+  margin-top: 0.3rem;
+}
+
+.home-template .like-section button {
+  background-color: #ffd700;
+  color: #2a0845;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.home-template .like-section button:hover {
+  background-color: #ffec8b;
+  transform: scale(1.05);
+}
+
 .home-template .cta-container {
   text-align: center;
   margin-top: auto;
@@ -149,19 +169,16 @@ html {
   font-weight: bold;
   font-size: 0.9rem;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
 }
 
 .home-template .cta-button:hover {
   background-color: #ffec8b;
-  transform: scale(1.05);
   color: #2a0845;
+  transform: scale(1.05);
 }
 
 .home-template footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   text-align: center;
   padding: 0.5rem;
   background: rgba(0, 0, 0, 0.3);
@@ -170,4 +187,59 @@ html {
 .home-template footer p {
   margin: 0;
   font-size: 0.8rem;
+}
+
+/* Filter options */
+.filter-options {
+  margin-bottom: 1rem;
+}
+
+.filter-options form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-options select,
+.filter-options input[type="checkbox"] {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 0.3rem;
+  border-radius: 5px;
+}
+
+.filter-options select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filter-options select::-webkit-scrollbar-track {
+  background: #3a0f6b;
+}
+
+.filter-options select::-webkit-scrollbar-thumb {
+  background-color: #8e44ad;
+  border-radius: 4px;
+  border: 2px solid #3a0f6b;
+}
+
+.filter-options select option {
+  background-color: #6441a5;
+  color: white;
+}
+
+.filter-options button {
+  background-color: #ffd700;
+  color: #2a0845;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.filter-options button:hover {
+  background-color: #ffec8b;
+  transform: scale(1.05);
 }
