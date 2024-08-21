@@ -3,27 +3,37 @@ package comment
 import (
 	"literary-lions-forum/internal/models"
 	"literary-lions-forum/pkg/database"
+	"strconv"
 )
 
 func GetCommentsByPostID(postID int) ([]models.Comment, error) {
-	comments := []models.Comment{}
-	rows, err := database.DB.Query(`
-		SELECT c.id, c.user_id, c.content, c.created_at, u.username
-		FROM comments c
-		JOIN users u ON c.user_id = u.id
-		WHERE c.post_id = ?
-		ORDER BY c.created_at DESC`, postID)
+	query := `
+			SELECT c.id, c.user_id, c.content, c.created_at, u.username,
+						 (SELECT COUNT(*) FROM likes WHERE comment_id = c.id AND is_like = 1) as likes,
+						 (SELECT COUNT(*) FROM likes WHERE comment_id = c.id AND is_like = 0) as dislikes
+			FROM comments c
+			JOIN users u ON c.user_id = u.id
+			WHERE c.post_id = ?
+			ORDER BY c.created_at DESC
+	`
+	rows, err := database.DB.Query(query, postID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	var comments []models.Comment
 	for rows.Next() {
 		var comment models.Comment
-		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt, &comment.User.Username)
+		var userID int
+		err := rows.Scan(
+			&comment.ID, &userID, &comment.Content, &comment.CreatedAt,
+			&comment.User.Username, &comment.Likes, &comment.Dislikes,
+		)
 		if err != nil {
 			return nil, err
 		}
+		comment.User.ID = strconv.Itoa(userID)
 		comments = append(comments, comment)
 	}
 

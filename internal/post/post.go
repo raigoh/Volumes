@@ -2,7 +2,10 @@ package post
 
 import (
 	"literary-lions-forum/internal/models"
+	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
+	"net/http"
+	"strconv"
 )
 
 func GetLatestPosts(limit int) ([]models.Post, error) {
@@ -58,27 +61,26 @@ func CreatePost(userID, categoryID int, title, content string) (int, error) {
 	return int(postID), nil
 }
 
-func GetPostByID(id int) (models.Post, error) {
-	var post models.Post
+func GetPostByID(postID int) (*models.Post, error) {
 	query := `
-			SELECT p.id, p.title, p.content, p.created_at, p.updated_at, 
-						 u.id AS user_id, u.username,
-						 c.id AS category_id, c.name AS category_name
+			SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username,
+						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
+						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
 			FROM posts p
 			JOIN users u ON p.user_id = u.id
-			LEFT JOIN post_categories pc ON p.id = pc.post_id
-			LEFT JOIN categories c ON pc.category_id = c.id
 			WHERE p.id = ?
 	`
-	err := database.DB.QueryRow(query, id).Scan(
-		&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt,
-		&post.User.ID, &post.User.Username,
-		&post.Category.ID, &post.Category.Name,
+	var post models.Post
+	var userID int
+	err := database.DB.QueryRow(query, postID).Scan(
+		&post.ID, &userID, &post.Title, &post.Content, &post.CreatedAt,
+		&post.User.Username, &post.Likes, &post.Dislikes,
 	)
 	if err != nil {
-		return post, err
+		return nil, err
 	}
-	return post, nil
+	post.User.ID = strconv.Itoa(userID)
+	return &post, nil
 }
 
 func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
@@ -141,4 +143,22 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 		posts = append(posts, p)
 	}
 	return posts, nil
+}
+
+func PostListHandler(w http.ResponseWriter, r *http.Request) {
+	posts, err := database.GetPosts() // Implement this function to fetch posts with like/dislike counts
+	if err != nil {
+		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+		return
+	}
+
+	data := models.PageData{
+		Title: "Literary Lions Forum",
+		Page:  "home",
+		Data: map[string]interface{}{
+			"Posts": posts,
+		},
+	}
+
+	utils.RenderTemplate(w, "home.html", data)
 }

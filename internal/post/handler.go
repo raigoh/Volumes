@@ -143,7 +143,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 	utils.RenderTemplate(w, "post-detail.html", models.PageData{
 		Title:    post.Title + " - Literary Lions Forum",
 		Page:     "post-detail",
-		Post:     &post,
+		Post:     post,
 		Comments: comments,
 	})
 }

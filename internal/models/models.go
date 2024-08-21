@@ -28,19 +28,21 @@ type Category struct {
 
 type Post struct {
 	ID        int
-	UserID    int
+	User      User
 	Title     string
 	Content   string
 	CreatedAt time.Time
-	UpdatedAt time.Time
-	User      User
 	Category  Category
+	Likes     int
+	Dislikes  int
 }
 
 type Comment struct {
 	ID        int
 	PostID    int
 	UserID    int
+	Likes     int
+	Dislikes  int
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time

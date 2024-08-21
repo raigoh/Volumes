@@ -2,6 +2,7 @@ package auth
 
 import (
 	"literary-lions-forum/internal/category"
+	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
@@ -142,6 +143,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	// Set headers to prevent caching
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
+
 	sess, _ := session.GetSession(w, r)
 	userID := session.GetUserID(sess)
 
@@ -162,6 +168,18 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error fetching filtered posts: %v", err)
 		posts = []models.Post{}
+	}
+
+	// Fetch fresh like/dislike counts for each post
+	for i, p := range posts {
+		likes, dislikes, err := like.GetLikesCount(p.ID, "post")
+		if err != nil {
+			// log.Printf("Error fetching like counts for post %d: %v", p.ID, err)
+		} else {
+			posts[i].Likes = likes
+			posts[i].Dislikes = dislikes
+		}
+		// log.Printf("Post ID: %d, Likes: %d, Dislikes: %d", p.ID, posts[i].Likes, posts[i].Dislikes)
 	}
 
 	popularCategories, err := category.GetPopularCategories(5)

@@ -1,7 +1,8 @@
 package like
 
 import (
-	"literary-lions-forum/pkg/database"
+	"encoding/json"
+	"fmt"
 	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
@@ -16,6 +17,43 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	sess, err := session.GetSession(w, r)
 	if err != nil {
+		http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	userID := session.GetUserID(sess)
+	if userID == 0 {
+		http.Error(w, "Unauthorized: User ID is 0", http.StatusUnauthorized)
+		return
+	}
+
+	targetID, err := strconv.Atoi(r.FormValue("target_id"))
+	if err != nil {
+		http.Error(w, "Invalid target ID", http.StatusBadRequest)
+		return
+	}
+
+	targetType := r.FormValue("target_type")
+	isLike, err := strconv.ParseBool(r.FormValue("is_like"))
+	if err != nil {
+		http.Error(w, "Invalid is_like value", http.StatusBadRequest)
+		return
+	}
+
+	err = AddLike(userID, targetID, targetType, isLike)
+	if err != nil {
+		log.Printf("Error processing like/dislike: %v", err)
+		http.Error(w, fmt.Sprintf("Error processing like/dislike: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect to the home page to ensure fresh data is loaded
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GetSession(w, r)
+	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -26,24 +64,20 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	postID, _ := strconv.Atoi(r.FormValue("post_id"))
-	commentID, _ := strconv.Atoi(r.FormValue("comment_id"))
-	isLike, _ := strconv.ParseBool(r.FormValue("is_like"))
+	targetID, _ := strconv.Atoi(r.FormValue("target_id"))
+	targetType := r.FormValue("target_type")
 
-	if commentID != 0 {
-		_, err = database.DB.Exec("INSERT OR REPLACE INTO likes (user_id, comment_id, is_like) VALUES (?, ?, ?)", userID, commentID, isLike)
-	} else if postID != 0 {
-		_, err = database.DB.Exec("INSERT OR REPLACE INTO likes (user_id, post_id, is_like) VALUES (?, ?, ?)", userID, postID, isLike)
-	} else {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
+	err = RemoveLike(userID, targetID, targetType)
 	if err != nil {
-		log.Printf("Error processing like/dislike: %v", err)
-		http.Error(w, "Error processing like/dislike", http.StatusInternalServerError)
+		http.Error(w, "Error removing like", http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+	likes, dislikes, err := GetLikesCount(targetID, targetType)
+	if err != nil {
+		http.Error(w, "Error getting like count", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]int{"likes": likes, "dislikes": dislikes})
 }

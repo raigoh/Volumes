@@ -6,6 +6,7 @@ import (
 	"literary-lions-forum/internal/auth"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
+	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
@@ -48,6 +49,8 @@ func main() {
 	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler))
 	http.HandleFunc("/admin/users", auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler)))
 	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(adminDashboardHandler)))
+	http.HandleFunc("/like", like.LikeHandler)
+	http.HandleFunc("/unlike", like.UnLikeHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

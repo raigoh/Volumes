@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"literary-lions-forum/internal/models"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -94,14 +95,15 @@ func createTables() error {
 	createLikesTable := `
 	CREATE TABLE IF NOT EXISTS likes (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER,
-		post_id INTEGER,
-		comment_id INTEGER,
-		is_like BOOLEAN,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id),
-		FOREIGN KEY (post_id) REFERENCES posts(id),
-		FOREIGN KEY (comment_id) REFERENCES comments(id)
+    user_id INTEGER,
+    post_id INTEGER,
+    comment_id INTEGER,
+    is_like BOOLEAN,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(id),
+    UNIQUE(user_id, post_id, comment_id)
 	);`
 
 	createCategoriesTable := `
@@ -298,4 +300,40 @@ func GetRecentActivity(n int) ([]models.Activity, error) {
 	}
 
 	return activities, nil
+}
+
+func GetPosts() ([]models.Post, error) {
+	query := `
+			SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username,
+						 c.id AS category_id, c.name AS category_name,
+						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) AS likes,
+						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) AS dislikes
+			FROM posts p
+			JOIN users u ON p.user_id = u.id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
+			ORDER BY p.created_at DESC
+	`
+
+	rows, err := DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var p models.Post
+		err := rows.Scan(
+			&p.ID, &p.User.ID, &p.Title, &p.Content, &p.CreatedAt, &p.User.Username,
+			&p.Category.ID, &p.Category.Name, &p.Likes, &p.Dislikes,
+		)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("Fetched post ID: %d, Likes: %d, Dislikes: %d", p.ID, p.Likes, p.Dislikes)
+		posts = append(posts, p)
+	}
+
+	return posts, nil
 }

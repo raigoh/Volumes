@@ -24,33 +24,33 @@
       </header>
       <main>
         <div class="home-container">
-            <div class="home-content">
-                <h2>Welcome to Literary Lions Forum</h2>
-                <div class="filter-options">
-                    <form action="/" method="GET">
-                        <label for="category">Category:</label>
-                        <select name="category" id="category">
-                            <option value="">All Categories</option>
-                            {{range .Data.AllCategories}}
-                            <option value="{{.ID}}" {{if eq (printf "%d" .ID) (printf "%d" $.Data.SelectedCategory)}}selected{{end}}>{{.Name}}</option>
-                            {{end}}
-                        </select>
+          <div class="home-content">
+            <h2>Welcome to Literary Lions Forum</h2>
+            <div class="filter-options">
+              <form action="/" method="GET">
+                <label for="category">Category:</label>
+                <select name="category" id="category">
+                  <option value="">All Categories</option>
+                  {{range .Data.AllCategories}}
+                  <option value="{{.ID}}" {{if eq (printf "%d" .ID) (printf "%d" $.Data.SelectedCategory)}}selected{{end}}>{{.Name}}</option>
+                  {{end}}
+                </select>
 
-                        {{if .User}}
-                        <label for="user">Posts:</label>
-                        <select name="user" id="user">
-                            <option value="">All Posts</option>
-                            <option value="{{.User.ID}}" {{if eq (printf "%s" .User.ID) (printf "%d" $.Data.FilterUserID)}}selected{{end}}>My Posts</option>
-                        </select>
+                {{if .User}}
+                <label for="user">Posts:</label>
+                <select name="user" id="user">
+                  <option value="">All Posts</option>
+                  <option value="{{.User.ID}}" {{if eq (printf "%s" .User.ID) (printf "%d" $.Data.FilterUserID)}}selected{{end}}>My Posts</option>
+                </select>
 
-                        <label for="liked">
-                            <input type="checkbox" name="liked" id="liked" value="true" {{if $.Data.LikedOnly}}checked{{end}}> Liked Posts Only
-                        </label>
-                        {{end}}
+                <label for="liked">
+                  <input type="checkbox" name="liked" id="liked" value="true" {{if $.Data.LikedOnly}}checked{{end}}> Liked Posts Only
+                </label>
+                {{end}}
 
-                        <button type="submit">Apply Filters</button>
-                    </form>
-                </div>
+                <button type="submit">Apply Filters</button>
+              </form>
+            </div>
             <div class="forum-sections">
               <div class="section">
                 <h3>Latest Discussions</h3>
@@ -59,12 +59,23 @@
                   <li>
                     <a href="/post/{{.ID}}">{{.Title}}</a>
                     <span class="meta">
-                      Posted by {{.User.Username}} | {{.CreatedAt.Format
-                      "January 2, 2006"}} | Category:
-                      <a href="/?category={{.Category.ID}}"
-                        >{{.Category.Name}}</a
-                      >
+                      Posted by {{.User.Username}} | {{.CreatedAt.Format "January 2, 2006"}} | Category:
+                      <a href="/?category={{.Category.ID}}">{{.Category.Name}}</a>
                     </span>
+                    <div class="like-section">
+                      <form action="/like" method="POST" style="display: inline;">
+                          <input type="hidden" name="target_id" value="{{.ID}}">
+                          <input type="hidden" name="target_type" value="post">
+                          <input type="hidden" name="is_like" value="true">
+                          <button type="submit">Like ({{.Likes}})</button>
+                      </form>
+                      <form action="/like" method="POST" style="display: inline;">
+                          <input type="hidden" name="target_id" value="{{.ID}}">
+                          <input type="hidden" name="target_type" value="post">
+                          <input type="hidden" name="is_like" value="false">
+                          <button type="submit">Dislike ({{.Dislikes}})</button>
+                      </form>
+                  </div>
                   </li>
                   {{else}}
                   <li>No posts found</li>
