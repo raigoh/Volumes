@@ -29,11 +29,37 @@
         <div class="comments-section">
           <h2>Comments</h2>
           {{range .Comments}}
-          <div class="comment">
+          <div id="comment-{{.ID}}" class="comment">
             <div class="comment-meta">
               {{.User.Username}} | {{.CreatedAt.Format "2006-01-02 15:04"}}
             </div>
             <div class="comment-content">{{.Content}}</div>
+            <div class="comment-actions">
+              <form
+                action="/like#comment-{{.ID}}"
+                method="POST"
+                class="like-form"
+              >
+                <input type="hidden" name="target_id" value="{{.ID}}" />
+                <input type="hidden" name="target_type" value="comment" />
+                <input type="hidden" name="is_like" value="true" />
+                <input type="hidden" name="post_id" value="{{$.Post.ID}}" />
+                <button type="submit" class="like-button">👍 {{.Likes}}</button>
+              </form>
+              <form
+                action="/like#comment-{{.ID}}"
+                method="POST"
+                class="dislike-form"
+              >
+                <input type="hidden" name="target_id" value="{{.ID}}" />
+                <input type="hidden" name="target_type" value="comment" />
+                <input type="hidden" name="is_like" value="false" />
+                <input type="hidden" name="post_id" value="{{$.Post.ID}}" />
+                <button type="submit" class="dislike-button">
+                  👎 {{.Dislikes}}
+                </button>
+              </form>
+            </div>
           </div>
           {{else}}
           <p>No comments yet.</p>
@@ -44,7 +70,12 @@
           <h3>Add a Comment</h3>
           <form action="/comment" method="POST">
             <input type="hidden" name="post_id" value="{{.Post.ID}}" />
-            <textarea name="content" rows="4" required></textarea>
+            <textarea
+              name="content"
+              rows="4"
+              required
+              placeholder="Write your comment here..."
+            ></textarea>
             <button type="submit" class="submit-button">Post Comment</button>
           </form>
         </div>

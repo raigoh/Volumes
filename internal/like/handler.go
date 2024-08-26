@@ -34,6 +34,11 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	targetType := r.FormValue("target_type")
+	if targetType != "post" && targetType != "comment" {
+		http.Error(w, "Invalid target type", http.StatusBadRequest)
+		return
+	}
+
 	isLike, err := strconv.ParseBool(r.FormValue("is_like"))
 	if err != nil {
 		http.Error(w, "Invalid is_like value", http.StatusBadRequest)
@@ -47,8 +52,9 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Redirect to the home page to ensure fresh data is loaded
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// Redirect back to the post detail page with an anchor to the specific comment
+	postID := r.FormValue("post_id")
+	http.Redirect(w, r, fmt.Sprintf("/post/%s#comment-%d", postID, targetID), http.StatusSeeOther)
 }
 
 func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
