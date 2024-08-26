@@ -161,8 +161,19 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	categoryID, _ := strconv.Atoi(r.URL.Query().Get("category"))
-	filterUserID, _ := strconv.Atoi(r.URL.Query().Get("user"))
+
+	// Use the logged-in user's ID for filtering if no specific user is selected
+	filterUserID := userID
+	if r.URL.Query().Get("user") != "" {
+		filterUserID, _ = strconv.Atoi(r.URL.Query().Get("user"))
+	}
+
 	likedOnly, _ := strconv.ParseBool(r.URL.Query().Get("liked"))
+
+	// Only apply the likedOnly filter if the user is logged in
+	if userID == 0 {
+		likedOnly = false
+	}
 
 	posts, err := post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
 	if err != nil {
@@ -174,12 +185,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	for i, p := range posts {
 		likes, dislikes, err := like.GetLikesCount(p.ID, "post")
 		if err != nil {
-			// log.Printf("Error fetching like counts for post %d: %v", p.ID, err)
+			log.Printf("Error fetching like counts for post %d: %v", p.ID, err)
 		} else {
 			posts[i].Likes = likes
 			posts[i].Dislikes = dislikes
 		}
-		// log.Printf("Post ID: %d, Likes: %d, Dislikes: %d", p.ID, posts[i].Likes, posts[i].Dislikes)
 	}
 
 	popularCategories, err := category.GetPopularCategories(5)

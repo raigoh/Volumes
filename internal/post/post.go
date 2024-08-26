@@ -6,6 +6,7 @@ import (
 	"literary-lions-forum/pkg/database"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func GetLatestPosts(limit int) ([]models.Post, error) {
@@ -85,13 +86,13 @@ func GetPostByID(postID int) (*models.Post, error) {
 
 func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
 	query := `
-		SELECT DISTINCT p.id, p.title, p.created_at, 
-			u.id AS user_id, u.username,
-			c.id AS category_id, c.name AS category_name
-		FROM posts p
-		JOIN users u ON p.user_id = u.id
-		LEFT JOIN post_categories pc ON p.id = pc.post_id
-		LEFT JOIN categories c ON pc.category_id = c.id
+			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
+						 u.id AS user_id, u.username,
+						 c.id AS category_id, c.name AS category_name
+			FROM posts p
+			JOIN users u ON p.user_id = u.id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
 	`
 
 	var args []interface{}
@@ -107,17 +108,14 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 		args = append(args, userID)
 	}
 
-	if likedOnly {
-		query += " LEFT JOIN likes l ON p.id = l.post_id"
+	if likedOnly && userID > 0 {
+		query += " INNER JOIN likes l ON p.id = l.post_id"
 		conditions = append(conditions, "l.user_id = ? AND l.is_like = TRUE")
 		args = append(args, userID)
 	}
 
 	if len(conditions) > 0 {
-		query += " WHERE " + conditions[0]
-		for _, condition := range conditions[1:] {
-			query += " AND " + condition
-		}
+		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
 	query += " ORDER BY p.created_at DESC LIMIT ?"
@@ -133,7 +131,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	for rows.Next() {
 		var p models.Post
 		err := rows.Scan(
-			&p.ID, &p.Title, &p.CreatedAt,
+			&p.ID, &p.Title, &p.Content, &p.CreatedAt,
 			&p.User.ID, &p.User.Username,
 			&p.Category.ID, &p.Category.Name,
 		)
@@ -142,6 +140,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 		}
 		posts = append(posts, p)
 	}
+
 	return posts, nil
 }
 
