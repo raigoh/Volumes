@@ -7,7 +7,6 @@ import (
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
 	"literary-lions-forum/internal/like"
-	"literary-lions-forum/internal/models"
 	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
@@ -61,11 +60,4 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Server failed to start:", err)
 	}
-}
-
-func adminDashboardHandler(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, "admin-dashboard.html", models.PageData{
-		Title: "Admin Dashboard - Literary Lions Forum",
-		Page:  "admin-dashboard",
-	})
 }
