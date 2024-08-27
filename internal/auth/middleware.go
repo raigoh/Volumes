@@ -24,7 +24,7 @@ func RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
-		// Check if the user is an admin (you'll need to implement this logic)
+		// Check if the user is an admin
 		isAdmin, err := admin.IsUserAdmin(session.GetUserID(sess))
 		if err != nil || !isAdmin {
 			http.Error(w, "Unauthorized", http.StatusForbidden)

@@ -267,11 +267,11 @@ func GetActiveUsers(days int) (int, error) {
 // GetRecentActivity returns the n most recent activities (posts or comments)
 func GetRecentActivity(n int) ([]models.Activity, error) {
 	query := `
-		SELECT 'post' as type, u.username, p.title as content, p.created_at
+		SELECT 'post' as type, u.username, p.title as content, p.created_at as created_at
 		FROM posts p
 		JOIN users u ON p.user_id = u.id
 		UNION ALL
-		SELECT 'comment' as type, u.username, c.content, c.created_at
+		SELECT 'comment' as type, u.username, c.content, c.created_at as created_at
 		FROM comments c
 		JOIN users u ON c.user_id = u.id
 		ORDER BY created_at DESC

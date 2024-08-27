@@ -48,7 +48,7 @@ func main() {
 	http.HandleFunc("/post/", post.PostDetailHandler)
 	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler))
 	http.HandleFunc("/admin/users", auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler)))
-	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(adminDashboardHandler)))
+	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(admin.AdminDashboardHandler)))
 	http.HandleFunc("/like", like.LikeHandler)
 	http.HandleFunc("/unlike", like.UnLikeHandler)
 

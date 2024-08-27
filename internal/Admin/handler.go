@@ -8,46 +8,40 @@ import (
 	"net/http"
 )
 
-func adminDashboardHandler(w http.ResponseWriter, r *http.Request) {
-	// Fetch the required data from your database
+func AdminDashboardHandler(w http.ResponseWriter, r *http.Request) {
 	totalUsers, err := database.GetTotalUsers()
 	if err != nil {
 		log.Printf("Error getting total users: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+		totalUsers = 0 // Set to 0 if there's an error
 	}
 
 	totalPosts, err := database.GetTotalPosts()
 	if err != nil {
 		log.Printf("Error getting total posts: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+		totalPosts = 0
 	}
 
 	totalComments, err := database.GetTotalComments()
 	if err != nil {
 		log.Printf("Error getting total comments: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+		totalComments = 0
 	}
 
 	activeUsers, err := database.GetActiveUsers(30) // Active in last 30 days
 	if err != nil {
 		log.Printf("Error getting active users: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+		activeUsers = 0
 	}
 
 	recentActivity, err := database.GetRecentActivity(10) // Get last 10 activities
 	if err != nil {
 		log.Printf("Error getting recent activity: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+		recentActivity = []models.Activity{} // Empty slice if there's an error
 	}
 
 	data := models.PageData{
 		Title:          "Admin Dashboard - Literary Lions Forum",
-		Page:           "admin_dashboard",
+		Page:           "admin-dashboard",
 		TotalUsers:     totalUsers,
 		TotalPosts:     totalPosts,
 		TotalComments:  totalComments,
