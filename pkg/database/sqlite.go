@@ -291,7 +291,7 @@ func GetRecentActivity(n int) ([]models.Activity, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error scanning activity row: %v", err)
 		}
-		a.Date = createdAt.Format("2006-01-02 15:04:05")
+		a.Date = createdAt.Format("02.01.2006 15:04")
 		activities = append(activities, a)
 	}
 
