@@ -97,7 +97,7 @@
                   <h3>All Users</h3>
                   <ul>
                     {{range .Users}}
-                    <li>{{.Username}}</li>
+                    <li><a href="/user/{{.ID}}">{{.Username}}</a></li>
                     {{else}}
                     <li>No users found</li>
                     {{end}}

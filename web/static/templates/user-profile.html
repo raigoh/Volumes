@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.User.Username}} - Literary Lions Forum</title>
+    <link rel="stylesheet" href="/static/css/user-profile.css" />
+  </head>
+  <body class="profile-template">
+    <div class="profile-container">
+      <div class="profile-header">
+        <h1>{{.User.Username}}'s Profile</h1>
+        <a href="/" class="back-link">Back to Home</a>
+      </div>
+      <div class="user-stats">
+        <p>Member since: {{.User.CreatedAt.Format "January 2, 2006"}}</p>
+        <p>Total Posts: {{len .Posts}}</p>
+      </div>
+      <div class="user-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+          {{range .Posts}}
+          <li>
+            <a href="/post/{{.ID}}">{{.Title}}</a>
+            <span class="meta"
+              >Posted on {{.CreatedAt.Format "January 2, 2006"}} | Category:
+              {{.Category.Name}}</span
+            >
+          </li>
+          {{else}}
+          <li>No posts found</li>
+          {{end}}
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

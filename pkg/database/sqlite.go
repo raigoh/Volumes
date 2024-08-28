@@ -337,3 +337,59 @@ func GetPosts() ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func GetUserByID(id string) (models.User, error) {
+	var user models.User
+	intID, err := strconv.Atoi(id)
+	if err != nil {
+		return user, err
+	}
+
+	err = DB.QueryRow("SELECT id, username, email, created_at FROM users WHERE id = ?", intID).Scan(&user.ID, &user.Username, &user.Email, &user.CreatedAt)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func GetUserPosts(userID string) ([]models.Post, error) {
+	intID, err := strconv.Atoi(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+		SELECT p.id, p.title, p.content, p.created_at, 
+			   c.id AS category_id, c.name AS category_name,
+			   (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) AS likes,
+			   (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) AS dislikes
+		FROM posts p
+		LEFT JOIN post_categories pc ON p.id = pc.post_id
+		LEFT JOIN categories c ON pc.category_id = c.id
+		WHERE p.user_id = ?
+		ORDER BY p.created_at DESC
+	`
+
+	rows, err := DB.Query(query, intID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var p models.Post
+		err := rows.Scan(
+			&p.ID, &p.Title, &p.Content, &p.CreatedAt,
+			&p.Category.ID, &p.Category.Name,
+			&p.Likes, &p.Dislikes,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, p)
+	}
+
+	return posts, nil
+}
