@@ -82,15 +82,27 @@
                   {{end}}
                 </ul>
               </div>
-              <div class="section">
-                <h3>Popular Categories</h3>
-                <ul>
-                  {{range .Data.PopularCategories}}
-                  <li><a href="/?category={{.ID}}">{{.Name}}</a></li>
-                  {{else}}
-                  <li>No categories found</li>
-                  {{end}}
-                </ul>
+              <div class="sidebar">
+                <div class="section popular-categories">
+                  <h3>Popular Categories</h3>
+                  <ul>
+                    {{range $index, $category := slice .Data.PopularCategories 0 5}}
+                    <li>{{$category.Name}}</li>
+                    {{else}}
+                    <li>No categories found</li>
+                    {{end}}
+                  </ul>
+                </div>
+                <div class="section user-list">
+                  <h3>All Users</h3>
+                  <ul>
+                    {{range .Users}}
+                    <li>{{.Username}}</li>
+                    {{else}}
+                    <li>No users found</li>
+                    {{end}}
+                  </ul>
+                </div>
               </div>
             </div>
             {{if .User}}

@@ -204,6 +204,13 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		allCategories = []models.Category{}
 	}
 
+	// Fetch all users
+	allUsers, err := database.GetAllUsers()
+	if err != nil {
+		log.Printf("Error fetching all users: %v", err)
+		allUsers = []models.User{}
+	}
+
 	pageData := models.PageData{
 		Title: "Home - Literary Lions Forum",
 		Page:  "home",
@@ -216,6 +223,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			"FilterUserID":      filterUserID,
 			"LikedOnly":         likedOnly,
 		},
+		Users: allUsers,
 	}
 
 	utils.RenderTemplate(w, "home.html", pageData)

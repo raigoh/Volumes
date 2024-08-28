@@ -243,3 +243,58 @@ html {
   background-color: #ffec8b;
   transform: scale(1.05);
 }
+
+/* Forum sections layout */
+.home-template .forum-sections {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.home-template .latest-discussions {
+  width: 60%;
+  overflow-y: auto;
+}
+
+.home-template .sidebar {
+  width: 35%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.home-template .popular-categories,
+.home-template .user-list {
+  width: 48%; /* Adjust this value as needed */
+}
+
+/* Adjust the section titles for consistent appearance */
+.home-template .sidebar h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+/* Adjust the list styles for better fit */
+.home-template .sidebar ul {
+  max-height: 150px; /* Adjust this value to control the height of the lists */
+  overflow-y: auto;
+}
+
+.home-template .sidebar li {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Styles for latest discussions */
+.home-template .latest-discussions li {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.home-template .latest-discussions .meta {
+  display: block;
+  margin-top: 0.3rem;
+}
