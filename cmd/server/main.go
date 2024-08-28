@@ -6,6 +6,7 @@ import (
 	"literary-lions-forum/internal/auth"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
+	"literary-lions-forum/internal/errors"
 	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/user"
@@ -52,6 +53,9 @@ func main() {
 	http.HandleFunc("/like", like.LikeHandler)
 	http.HandleFunc("/unlike", like.UnLikeHandler)
 	http.HandleFunc("/user/{id}", user.UserProfileHandler)
+
+	// This handler is only for testing purposes
+	http.HandleFunc("/error", errors.ErrorHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
