@@ -120,53 +120,38 @@ html {
 }
 
 .user-posts li {
-  background: rgba(255, 255, 255, 0.05);
   margin-bottom: 1rem;
+}
+
+.user-posts .post-link {
+  display: block;
+  background: rgba(255, 255, 255, 0.05);
   padding: 1rem;
   border-radius: 10px;
   transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
-.user-posts li:hover {
+.user-posts .post-link:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.user-posts a {
+.user-posts h3 {
   color: #b8a3d3;
-  text-decoration: none;
   font-size: 1.2rem;
-  font-weight: bold;
+  margin: 0 0 0.5rem 0;
   transition: color 0.3s ease;
 }
 
-.user-posts a:hover {
+.user-posts .post-link:hover h3 {
   color: #ffd700;
 }
 
 .user-posts .meta {
   font-size: 0.9rem;
   color: #b8a3d3;
-  margin-top: 0.5rem;
   display: block;
-}
-
-@media (max-width: 768px) {
-  .profile-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .profile-header h1 {
-    margin-bottom: 1rem;
-  }
-
-  .user-stats {
-    flex-direction: column;
-  }
-
-  .user-stats p {
-    margin-bottom: 0.5rem;
-  }
 }
