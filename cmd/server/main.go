@@ -7,6 +7,7 @@ import (
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
 	"literary-lions-forum/internal/errors"
+	"literary-lions-forum/internal/home"
 	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/user"
@@ -41,7 +42,7 @@ func main() {
 	}
 
 	// Set up routes
-	http.HandleFunc("/", auth.HomeHandler)
+	http.HandleFunc("/", home.HomeHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 	http.HandleFunc("/logout", auth.LogoutHandler)
