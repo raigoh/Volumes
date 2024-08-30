@@ -9,7 +9,9 @@ import (
 	"strings"
 )
 
+// GetLatestPosts retrieves the most recent posts with a specified limit
 func GetLatestPosts(limit int) ([]models.Post, error) {
+	// SQL query to fetch latest posts with user and category information
 	query := `
 			SELECT p.id, p.title, p.created_at, 
 						 u.id AS user_id, u.username,
@@ -21,12 +23,14 @@ func GetLatestPosts(limit int) ([]models.Post, error) {
 			ORDER BY p.created_at DESC
 			LIMIT ?
 	`
+	// Execute the query
 	rows, err := database.DB.Query(query, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	// Iterate through the results and construct Post objects
 	var posts []models.Post
 	for rows.Next() {
 		var p models.Post
@@ -43,17 +47,21 @@ func GetLatestPosts(limit int) ([]models.Post, error) {
 	return posts, nil
 }
 
+// CreatePost inserts a new post into the database
 func CreatePost(userID, categoryID int, title, content string) (int, error) {
+	// Insert the post
 	result, err := database.DB.Exec("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)", userID, title, content)
 	if err != nil {
 		return 0, err
 	}
 
+	// Get the ID of the newly inserted post
 	postID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
+	// Associate the post with the category
 	_, err = database.DB.Exec("INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)", postID, categoryID)
 	if err != nil {
 		return 0, err
@@ -62,7 +70,9 @@ func CreatePost(userID, categoryID int, title, content string) (int, error) {
 	return int(postID), nil
 }
 
+// GetPostByID retrieves a single post by its ID, including like and dislike counts
 func GetPostByID(postID int) (*models.Post, error) {
+	// SQL query to fetch post details with user information and like/dislike counts
 	query := `
 			SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username,
 						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
@@ -73,6 +83,7 @@ func GetPostByID(postID int) (*models.Post, error) {
 	`
 	var post models.Post
 	var userID int
+	// Execute the query and scan the result into the post struct
 	err := database.DB.QueryRow(query, postID).Scan(
 		&post.ID, &userID, &post.Title, &post.Content, &post.CreatedAt,
 		&post.User.Username, &post.Likes, &post.Dislikes,
@@ -84,7 +95,9 @@ func GetPostByID(postID int) (*models.Post, error) {
 	return &post, nil
 }
 
+// GetFilteredPosts retrieves posts based on various filter criteria
 func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
+	// Base SQL query
 	query := `
 			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
 						 u.id AS user_id, u.username,
@@ -98,6 +111,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	var args []interface{}
 	var conditions []string
 
+	// Add filter conditions based on input parameters
 	if categoryID > 0 {
 		conditions = append(conditions, "c.id = ?")
 		args = append(args, categoryID)
@@ -114,19 +128,23 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 		args = append(args, userID)
 	}
 
+	// Combine all conditions
 	if len(conditions) > 0 {
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
+	// Add ordering and limit
 	query += " ORDER BY p.created_at DESC LIMIT ?"
 	args = append(args, limit)
 
+	// Execute the query
 	rows, err := database.DB.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	// Iterate through the results and construct Post objects
 	var posts []models.Post
 	for rows.Next() {
 		var p models.Post
@@ -144,13 +162,16 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	return posts, nil
 }
 
+// PostListHandler handles HTTP requests for the post list page
 func PostListHandler(w http.ResponseWriter, r *http.Request) {
-	posts, err := database.GetPosts() // Implement this function to fetch posts with like/dislike counts
+	// Fetch posts from the database
+	posts, err := database.GetPosts() // Note: This function needs to be implemented
 	if err != nil {
 		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
 		return
 	}
 
+	// Prepare data for the template
 	data := models.PageData{
 		Title: "Literary Lions Forum",
 		Page:  "home",
@@ -159,5 +180,6 @@ func PostListHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	// Render the template
 	utils.RenderTemplate(w, "home.html", data)
 }

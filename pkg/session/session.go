@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// sessionStore is a thread-safe map to store active sessions
 var sessionStore = struct {
 	sync.RWMutex
 	sessions map[string]*models.Session
@@ -20,16 +21,17 @@ const (
 	sessionDuration   = 24 * time.Hour
 )
 
+// generateSessionID creates a unique session ID
 func generateSessionID() string {
 	b := make([]byte, 32)
 	rand.Read(b)
 	return base64.URLEncoding.EncodeToString(b)
 }
 
+// GetSession retrieves or creates a session for the current request
 func GetSession(w http.ResponseWriter, r *http.Request) (*models.Session, error) {
 	cookie, err := r.Cookie(sessionCookieName)
 	if err != nil || cookie.Value == "" {
-		// log.Println("No session cookie found, creating new session")
 		return createSession(w)
 	}
 
@@ -38,17 +40,16 @@ func GetSession(w http.ResponseWriter, r *http.Request) (*models.Session, error)
 	sessionStore.RUnlock()
 
 	if !exists || time.Now().After(session.ExpiresAt) {
-		// log.Println("Session doesn't exist or has expired, creating new session")
 		if exists {
 			DestroySession(w, r)
 		}
 		return createSession(w)
 	}
 
-	// log.Printf("Retrieved existing session for user ID: %d", session.UserID)
 	return session, nil
 }
 
+// createSession generates a new session and sets a cookie
 func createSession(w http.ResponseWriter) (*models.Session, error) {
 	sessionID := generateSessionID()
 	session := &models.Session{
@@ -75,6 +76,7 @@ func createSession(w http.ResponseWriter) (*models.Session, error) {
 	return session, nil
 }
 
+// DestroySession removes the session and clears the session cookie
 func DestroySession(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(sessionCookieName)
 	if err == nil && cookie.Value != "" {
@@ -94,25 +96,28 @@ func DestroySession(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SetUserID stores the user ID in the session
 func SetUserID(session *models.Session, userID int) {
 	session.UserID = userID
-	// log.Printf("Set user ID in session: %d", userID)
 }
 
+// GetUserID retrieves the user ID from the session
 func GetUserID(session *models.Session) int {
-	// log.Printf("Getting user ID from session: %d", session.UserID)
 	return session.UserID
 }
 
+// SetIsAdmin stores the admin status in the session
 func SetIsAdmin(session *models.Session, isAdmin bool) {
 	session.Data["isAdmin"] = isAdmin
 }
 
+// GetIsAdmin retrieves the admin status from the session
 func GetIsAdmin(session *models.Session) bool {
 	isAdmin, ok := session.Data["isAdmin"].(bool)
 	return ok && isAdmin
 }
 
+// GetUserByID retrieves a user from the database by their ID
 func GetUserByID(userID int) (*models.User, error) {
 	var user models.User
 	err := database.DB.QueryRow("SELECT id, username, email FROM users WHERE id = ?", userID).Scan(&user.ID, &user.Username, &user.Email)

@@ -6,15 +6,16 @@ import (
 	"literary-lions-forum/pkg/database"
 )
 
-// AddLike adds or updates a like/dislike
+// AddLike adds or updates a like/dislike for a post or comment
 func AddLike(userID int, targetID int, targetType string, isLike bool) error {
+	// Begin a new transaction
 	tx, err := database.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("error starting transaction: %v", err)
 	}
-	defer tx.Rollback()
+	defer tx.Rollback() // Ensure rollback if the function returns early
 
-	// Check if a like already exists
+	// Check if a like already exists for this user and target
 	var existingID int
 	var existingIsLike bool
 	query := `
@@ -47,6 +48,7 @@ func AddLike(userID int, targetID int, targetType string, isLike bool) error {
 		return fmt.Errorf("error adding/updating like: %v", err)
 	}
 
+	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		return fmt.Errorf("error committing transaction: %v", err)
@@ -55,18 +57,19 @@ func AddLike(userID int, targetID int, targetType string, isLike bool) error {
 	return nil
 }
 
-// RemoveLike removes a like/dislike
+// RemoveLike removes a like/dislike for a post or comment
 func RemoveLike(userID int, targetID int, targetType string) error {
 	query := `
 			DELETE FROM likes
 			WHERE user_id = ? AND
 			CASE WHEN ? = 'post' THEN post_id = ? ELSE comment_id = ? END
 	`
+	// Execute the delete query
 	_, err := database.DB.Exec(query, userID, targetType, targetID, targetID)
 	return err
 }
 
-// GetLikesCount returns the number of likes and dislikes for a target
+// GetLikesCount returns the number of likes and dislikes for a target (post or comment)
 func GetLikesCount(targetID int, targetType string) (likes int, dislikes int, err error) {
 	query := `
 			SELECT 
@@ -75,6 +78,7 @@ func GetLikesCount(targetID int, targetType string) (likes int, dislikes int, er
 			FROM likes
 			WHERE (? = 'post' AND post_id = ?) OR (? = 'comment' AND comment_id = ?)
 	`
+	// Execute the query and scan the results
 	err = database.DB.QueryRow(query, targetType, targetID, targetType, targetID).Scan(&likes, &dislikes)
 	if err != nil {
 		return 0, 0, fmt.Errorf("error getting like counts: %v", err)
@@ -82,7 +86,7 @@ func GetLikesCount(targetID int, targetType string) (likes int, dislikes int, er
 	return
 }
 
-// GetUserLike returns the user's like status for a target
+// GetUserLike returns the user's like status for a target (post or comment)
 func GetUserLike(userID int, targetID int, targetType string) (isLike *bool, err error) {
 	query := `
 			SELECT is_like
@@ -91,12 +95,15 @@ func GetUserLike(userID int, targetID int, targetType string) (isLike *bool, err
 			CASE WHEN ? = 'post' THEN post_id = ? ELSE comment_id = ? END
 	`
 	var like bool
+	// Execute the query and scan the result
 	err = database.DB.QueryRow(query, userID, targetType, targetID, targetID).Scan(&like)
 	if err == sql.ErrNoRows {
+		// No like found, return nil
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
+	// Return a pointer to the like status
 	return &like, nil
 }
