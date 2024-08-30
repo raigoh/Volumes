@@ -38,8 +38,8 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse query parameters for filtering
 	categoryID, _ := strconv.Atoi(r.URL.Query().Get("category"))
 
-	// Determine which user's posts to filter
-	filterUserID := userID
+	// Initialize filterUserID to 0 (which means "all users")
+	var filterUserID int
 	if r.URL.Query().Get("user") != "" {
 		filterUserID, _ = strconv.Atoi(r.URL.Query().Get("user"))
 	}
@@ -103,6 +103,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			"SelectedCategory":  categoryID,
 			"FilterUserID":      filterUserID,
 			"LikedOnly":         likedOnly,
+			"CurrentUserID":     userID,
 		},
 		Users: allUsers,
 	}
