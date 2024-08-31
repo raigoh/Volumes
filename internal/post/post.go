@@ -2,9 +2,7 @@ package post
 
 import (
 	"literary-lions-forum/internal/models"
-	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -162,24 +160,36 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	return posts, nil
 }
 
-// PostListHandler handles HTTP requests for the post list page
-func PostListHandler(w http.ResponseWriter, r *http.Request) {
-	// Fetch posts from the database
-	posts, err := database.GetPosts() // Note: This function needs to be implemented
+func SearchPosts(query string, limit int) ([]models.Post, error) {
+	posts := []models.Post{}
+
+	rows, err := database.DB.Query(`
+		SELECT p.id, p.title, p.content, p.created_at, u.id, u.username, c.id, c.name
+		FROM posts p
+		JOIN users u ON p.user_id = u.id
+		JOIN categories c ON p.category_id = c.id
+		WHERE p.title LIKE ? OR p.content LIKE ?
+		ORDER BY p.created_at DESC
+		LIMIT ?
+	`, "%"+query+"%", "%"+query+"%", limit)
+
 	if err != nil {
-		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
-		return
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post models.Post
+		err := rows.Scan(
+			&post.ID, &post.Title, &post.Content, &post.CreatedAt,
+			&post.User.ID, &post.User.Username,
+			&post.Category.ID, &post.Category.Name,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
 	}
 
-	// Prepare data for the template
-	data := models.PageData{
-		Title: "Literary Lions Forum",
-		Page:  "home",
-		Data: map[string]interface{}{
-			"Posts": posts,
-		},
-	}
-
-	// Render the template
-	utils.RenderTemplate(w, "home.html", data)
+	return posts, nil
 }

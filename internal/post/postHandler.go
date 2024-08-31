@@ -169,3 +169,25 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 		Comments: comments,
 	})
 }
+
+// PostListHandler handles HTTP requests for the post list page
+func PostListHandler(w http.ResponseWriter, r *http.Request) {
+	// Fetch posts from the database
+	posts, err := database.GetPosts()
+	if err != nil {
+		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare data for the template
+	data := models.PageData{
+		Title: "Literary Lions Forum",
+		Page:  "home",
+		Data: map[string]interface{}{
+			"Posts": posts,
+		},
+	}
+
+	// Render the template
+	utils.RenderTemplate(w, "home.html", data)
+}

@@ -194,20 +194,39 @@ html {
   margin-bottom: 1rem;
 }
 
-.filter-options form {
+.filter-options .filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-options .main-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
+  flex: 1;
+}
+
+.filter-options .search-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 1rem;
 }
 
 .filter-options select,
+.filter-options input[type="text"],
 .filter-options input[type="checkbox"] {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   padding: 0.3rem;
   border-radius: 5px;
+}
+
+.filter-options input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 1);
 }
 
 .filter-options select::-webkit-scrollbar {
