@@ -73,8 +73,8 @@ func RemoveLike(userID int, targetID int, targetType string) error {
 func GetLikesCount(targetID int, targetType string) (likes int, dislikes int, err error) {
 	query := `
 			SELECT 
-					SUM(CASE WHEN is_like = 1 THEN 1 ELSE 0 END) as likes,
-					SUM(CASE WHEN is_like = 0 THEN 1 ELSE 0 END) as dislikes
+					COALESCE(SUM(CASE WHEN is_like = 1 THEN 1 ELSE 0 END), 0) as likes,
+					COALESCE(SUM(CASE WHEN is_like = 0 THEN 1 ELSE 0 END), 0) as dislikes
 			FROM likes
 			WHERE (? = 'post' AND post_id = ?) OR (? = 'comment' AND comment_id = ?)
 	`

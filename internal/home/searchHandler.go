@@ -11,6 +11,7 @@ import (
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
+	log.Printf("Searching for: %s", query)
 
 	sess, _ := session.GetSession(w, r)
 	userID := session.GetUserID(sess)
@@ -24,11 +25,12 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	posts, err := post.SearchPosts(query, 10) // Limit to 10 results for now
+	posts, err := post.SearchPosts(query, 10)
 	if err != nil {
 		log.Printf("Error searching posts: %v", err)
 		posts = []models.Post{}
 	}
+	log.Printf("Found %d posts", len(posts))
 
 	pageData := models.PageData{
 		Title: "Search Results - Literary Lions Forum",

@@ -35,27 +35,34 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Parse query parameters for filtering
+	// Parse query parameters for filtering and search
 	categoryID, _ := strconv.Atoi(r.URL.Query().Get("category"))
-
-	// Initialize filterUserID to 0 (which means "all users")
 	var filterUserID int
 	if r.URL.Query().Get("user") != "" {
 		filterUserID, _ = strconv.Atoi(r.URL.Query().Get("user"))
 	}
-
-	// Parse 'liked only' filter parameter
 	likedOnly, _ := strconv.ParseBool(r.URL.Query().Get("liked"))
+	searchQuery := r.URL.Query().Get("query")
 
 	// Only apply the likedOnly filter if the user is logged in
 	if userID == 0 {
 		likedOnly = false
 	}
 
-	// Fetch filtered posts
-	posts, err := post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
+	var posts []models.Post
+	var err error
+
+	// Fetch posts based on search query or filters
+	if searchQuery != "" {
+		// If there's a search query, use it to search posts
+		posts, err = post.SearchPosts(searchQuery, 10) // Limit to 10 results
+	} else {
+		// If no search query, use the existing filter logic
+		posts, err = post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
+	}
+
 	if err != nil {
-		log.Printf("Error fetching filtered posts: %v", err)
+		log.Printf("Error fetching posts: %v", err)
 		posts = []models.Post{}
 	}
 
@@ -104,6 +111,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			"FilterUserID":      filterUserID,
 			"LikedOnly":         likedOnly,
 			"CurrentUserID":     userID,
+			"SearchQuery":       searchQuery,
 		},
 		Users: allUsers,
 	}

@@ -98,8 +98,10 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	// Base SQL query
 	query := `
 			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
-						 u.id AS user_id, u.username,
-						 c.id AS category_id, c.name AS category_name
+									 u.id AS user_id, u.username,
+									 c.id AS category_id, c.name AS category_name,
+									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
+									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
 			FROM posts p
 			JOIN users u ON p.user_id = u.id
 			LEFT JOIN post_categories pc ON p.id = pc.post_id
@@ -120,7 +122,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 		args = append(args, userID)
 	}
 
-	if likedOnly && userID > 0 {
+	if likedOnly {
 		query += " INNER JOIN likes l ON p.id = l.post_id"
 		conditions = append(conditions, "l.user_id = ? AND l.is_like = TRUE")
 		args = append(args, userID)
@@ -150,6 +152,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 			&p.ID, &p.Title, &p.Content, &p.CreatedAt,
 			&p.User.ID, &p.User.Username,
 			&p.Category.ID, &p.Category.Name,
+			&p.Likes, &p.Dislikes,
 		)
 		if err != nil {
 			return nil, err
@@ -161,29 +164,35 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 }
 
 func SearchPosts(query string, limit int) ([]models.Post, error) {
-	posts := []models.Post{}
+	sqlQuery := `
+			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
+									 u.id AS user_id, u.username,
+									 c.id AS category_id, c.name AS category_name,
+									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
+									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
+			FROM posts p
+			JOIN users u ON p.user_id = u.id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
+			WHERE p.title LIKE ? OR p.content LIKE ?
+			ORDER BY p.created_at DESC
+			LIMIT ?
+	`
 
-	rows, err := database.DB.Query(`
-		SELECT p.id, p.title, p.content, p.created_at, u.id, u.username, c.id, c.name
-		FROM posts p
-		JOIN users u ON p.user_id = u.id
-		JOIN categories c ON p.category_id = c.id
-		WHERE p.title LIKE ? OR p.content LIKE ?
-		ORDER BY p.created_at DESC
-		LIMIT ?
-	`, "%"+query+"%", "%"+query+"%", limit)
-
+	rows, err := database.DB.Query(sqlQuery, "%"+query+"%", "%"+query+"%", limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	var posts []models.Post
 	for rows.Next() {
 		var post models.Post
 		err := rows.Scan(
 			&post.ID, &post.Title, &post.Content, &post.CreatedAt,
 			&post.User.ID, &post.User.Username,
 			&post.Category.ID, &post.Category.Name,
+			&post.Likes, &post.Dislikes,
 		)
 		if err != nil {
 			return nil, err

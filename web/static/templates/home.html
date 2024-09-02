@@ -51,15 +51,16 @@
 
                   <button type="submit">Apply Filters</button>
                 </form>
-                <form id="searchForm" action="/search" method="GET" class="search-form">
-                  <input type="text" name="query" placeholder="Search posts...">
+                <form action="/" method="GET" class="search-form">
+                  <input type="text" name="query" id="searchQuery" placeholder="Search posts..." value="{{.Data.SearchQuery}}">
                   <button type="submit">Search</button>
                 </form>
+              </div>
             </div>
-            <div class="forum-sections">
+            <div id="contentArea" class="forum-sections">
               <div class="section">
-                <h3>Latest Discussions</h3>
-                <ul>
+                <h3>{{if .Data.SearchQuery}}Search Results for "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}</h3>
+                <ul id="postsList">
                   {{range .Data.Posts}}
                   <li>
                     <a href="/post/{{.ID}}">{{.Title}}</a>
@@ -80,7 +81,7 @@
                           <input type="hidden" name="is_like" value="false">
                           <button type="submit">Dislike ({{.Dislikes}})</button>
                       </form>
-                  </div>
+                    </div>
                   </li>
                   {{else}}
                   <li>No posts found</li>
