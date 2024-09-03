@@ -35,14 +35,27 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Parse query parameters for filtering and search
-	categoryID, _ := strconv.Atoi(r.URL.Query().Get("category"))
+	// Initialize variables for filtering and search
+	var categoryID int
 	var filterUserID int
-	if r.URL.Query().Get("user") != "" {
+	var likedOnly bool
+	var searchQuery string
+
+	if r.Method == http.MethodPost {
+		r.ParseForm()
+
+		// Handle both search and filter options
+		searchQuery = r.FormValue("query")
+		categoryID, _ = strconv.Atoi(r.FormValue("category"))
+		filterUserID, _ = strconv.Atoi(r.FormValue("user"))
+		likedOnly = r.FormValue("liked") == "true"
+	} else {
+		// Handle GET parameters (you might want to remove this eventually)
+		categoryID, _ = strconv.Atoi(r.URL.Query().Get("category"))
 		filterUserID, _ = strconv.Atoi(r.URL.Query().Get("user"))
+		likedOnly, _ = strconv.ParseBool(r.URL.Query().Get("liked"))
+		searchQuery = r.URL.Query().Get("query")
 	}
-	likedOnly, _ := strconv.ParseBool(r.URL.Query().Get("liked"))
-	searchQuery := r.URL.Query().Get("query")
 
 	// Only apply the likedOnly filter if the user is logged in
 	if userID == 0 {

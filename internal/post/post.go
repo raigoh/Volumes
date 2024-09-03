@@ -97,19 +97,19 @@ func GetPostByID(postID int) (*models.Post, error) {
 func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
 	// Base SQL query
 	query := `
-			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
-									 u.id AS user_id, u.username,
-									 c.id AS category_id, c.name AS category_name,
-									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
-									 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
-			FROM posts p
-			JOIN users u ON p.user_id = u.id
-			LEFT JOIN post_categories pc ON p.id = pc.post_id
-			LEFT JOIN categories c ON pc.category_id = c.id
-	`
+        SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
+                        u.id AS user_id, u.username,
+                        c.id AS category_id, c.name AS category_name,
+                        (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
+                        (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_categories pc ON p.id = pc.post_id
+        LEFT JOIN categories c ON pc.category_id = c.id
+    `
 
-	var args []interface{}
 	var conditions []string
+	var args []interface{}
 
 	// Add filter conditions based on input parameters
 	if categoryID > 0 {
@@ -118,13 +118,12 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 	}
 
 	if userID > 0 {
-		conditions = append(conditions, "p.user_id = ?")
-		args = append(args, userID)
-	}
-
-	if likedOnly {
-		query += " INNER JOIN likes l ON p.id = l.post_id"
-		conditions = append(conditions, "l.user_id = ? AND l.is_like = TRUE")
+		if likedOnly {
+			query += " JOIN likes l ON p.id = l.post_id"
+			conditions = append(conditions, "l.user_id = ? AND l.is_like = TRUE")
+		} else {
+			conditions = append(conditions, "p.user_id = ?")
+		}
 		args = append(args, userID)
 	}
 
