@@ -61,7 +61,7 @@
               <div class="section">
                 <h3>{{if .Data.SearchQuery}}Search Results for "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}</h3>
                 <ul id="postsList">
-                  {{range .Data.Posts}}
+                  {{range (slice .Data.Posts 0 5)}}
                   <li>
                     <a href="/post/{{.ID}}">{{.Title}}</a>
                     <span class="meta">
