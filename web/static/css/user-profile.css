@@ -61,6 +61,9 @@ html {
   max-width: 800px;
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 80vh; /* Set a fixed height for the container */
 }
 
 .profile-header {
@@ -108,10 +111,21 @@ html {
   font-size: 1.1rem;
 }
 
+.user-posts {
+  flex-grow: 1;
+  overflow-y: auto; /* Make this section scrollable */
+  padding-right: 1rem; /* Add some padding for the scrollbar */
+}
+
 .user-posts h2 {
   color: #ffd700;
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  background: rgba(30, 6, 57, 0.9);
+  padding: 1rem 0;
+  z-index: 1;
 }
 
 .user-posts ul {
@@ -154,4 +168,23 @@ html {
   font-size: 0.9rem;
   color: #b8a3d3;
   display: block;
+}
+
+/* Customizing scrollbar for webkit browsers */
+.user-posts::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-posts::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.user-posts::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.user-posts::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
