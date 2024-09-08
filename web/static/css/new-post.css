@@ -49,6 +49,7 @@ html {
 .new-post-template input[type="text"],
 .new-post-template select,
 .new-post-template textarea,
+.new-post-template .home-button,
 .new-post-template .submit-button {
   width: 100%;
   padding: 0.65rem;
@@ -56,6 +57,7 @@ html {
   border-radius: 5px;
   box-sizing: border-box;
 }
+
 
 .new-post-template input[type="text"],
 .new-post-template select,
@@ -106,7 +108,21 @@ html {
   border-radius: 25px;
 }
 
+.new-post-template .home-button {
+  background: #8e44ad;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  border-radius: 25px;
+} 
+
 .new-post-template .submit-button:hover {
+  background: #9b59b6;
+  transform: scale(1.05);
+}
+
+.new-post-template .home-button:hover {
   background: #9b59b6;
   transform: scale(1.05);
 }
