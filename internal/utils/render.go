@@ -53,8 +53,8 @@ func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificT
 	w.WriteHeader(status)
 
 	if status == http.StatusBadRequest {
-
-		err := templates.ExecuteTemplate(w, "error-page-badrquest.html", errData)
+		// Execute the error tempalate with error data, if error is Bad Request
+		err := templates.ExecuteTemplate(w, "error-page-badrequest.html", errData)
 		if err != nil {
 			// Log the error if the error template itself fails to render
 			log.Printf("Error rendering template %s: %v", "error-page.html", err)

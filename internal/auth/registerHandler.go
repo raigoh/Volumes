@@ -64,7 +64,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 				Page:  "register",
 				Error: "Error creating user: " + err.Error(),
 			})
-			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, please be patient, we are doing your best :(")
 			return
 		}
 
