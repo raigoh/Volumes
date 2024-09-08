@@ -6,7 +6,6 @@ import (
 	"literary-lions-forum/internal/auth"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/comment"
-	"literary-lions-forum/internal/errors"
 	"literary-lions-forum/internal/home"
 	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/post"
@@ -76,7 +75,7 @@ func main() {
 	http.HandleFunc("/user/{id}", user.UserProfileHandler)
 
 	// Error handler (for testing purposes)
-	http.HandleFunc("/error", errors.ErrorHandler)
+	//http.HandleFunc("/error", errors.ErrorHandler)
 
 	// Determine the port to run the server on
 	// Use the PORT environment variable if set, otherwise default to 8080

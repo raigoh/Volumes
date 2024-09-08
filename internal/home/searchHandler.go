@@ -26,6 +26,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		user, err = session.GetUserByID(userID)
 		if err != nil {
 			log.Printf("Error fetching user: %v", err)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, the database is being picky today.. We are still training him")
 		}
 	}
 

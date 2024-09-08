@@ -3,6 +3,7 @@ package like
 import (
 	"encoding/json"
 	"fmt"
+	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
@@ -32,18 +33,21 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	targetID, err := strconv.Atoi(r.FormValue("target_id"))
 	if err != nil {
 		http.Error(w, "Invalid target ID", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
 		return
 	}
 
 	targetType := r.FormValue("target_type")
 	if targetType != "post" && targetType != "comment" {
 		http.Error(w, "Invalid target type", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
 		return
 	}
 
 	isLike, err := strconv.ParseBool(r.FormValue("is_like"))
 	if err != nil {
 		http.Error(w, "Invalid is_like value", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
 		return
 	}
 
@@ -51,6 +55,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error processing like/dislike: %v", err)
 		http.Error(w, fmt.Sprintf("Error processing like/dislike: %v", err), http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 
@@ -95,6 +100,7 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	err = RemoveLike(userID, targetID, targetType)
 	if err != nil {
 		http.Error(w, "Error removing like", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 
@@ -102,6 +108,7 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	likes, dislikes, err := GetLikesCount(targetID, targetType)
 	if err != nil {
 		http.Error(w, "Error getting like count", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 

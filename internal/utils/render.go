@@ -28,18 +28,20 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		// Note: The following line is commented out, presumably to avoid potential infinite recursion
 		//RenderErrorTemplate(w, err)
+		RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, please be patient, we are doing your best :(")
 	}
 }
 
 // RenderErrorTemplate renders a specific error template with the provided error
-func RenderErrorTemplate(w http.ResponseWriter, err error) {
+// Function handels writing the header and if some speicfic text is needed to write in the page, example "please contact support on number +358 040 1231234"
+func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificText string) {
 	// Create a struct to hold error data for the template
 	errData := struct {
 		Error        error
 		SpecificText string
 	}{
 		Error:        err,
-		SpecificText: "Have you tried turning it off and back on again ?",
+		SpecificText: specificText,
 	}
 
 	// If no error is provided, use a nil error
@@ -47,15 +49,32 @@ func RenderErrorTemplate(w http.ResponseWriter, err error) {
 		errData.Error = err
 	}
 
-	// Execute the error template with the error data
-	err2 := templates.ExecuteTemplate(w, "error-page.html", errData)
-	if err2 != nil {
-		// Log the error if the error template itself fails to render
-		log.Printf("Error rendering template %s: %v", "error-page.html", err2)
-		// Send a generic error message to the client
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		// Attempt to render the error template again with the new error
-		// Note: This could potentially cause infinite recursion if not handled carefully
-		RenderErrorTemplate(w, err2)
+	// Write specific status for error page, 404, 400, 500, etc.
+	w.WriteHeader(status)
+
+	if status == http.StatusBadRequest {
+
+		err := templates.ExecuteTemplate(w, "error-page-badrquest.html", errData)
+		if err != nil {
+			// Log the error if the error template itself fails to render
+			log.Printf("Error rendering template %s: %v", "error-page.html", err)
+			// Send a generic error message to the client
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			// Attempt to render the error template again with the new error
+			// Note: This could potentially cause infinite recursion if not handled carefully
+			RenderErrorTemplate(w, err, 400, "")
+		}
+	} else {
+		// Execute the error template with the error data, if error is not Bad Request
+		err := templates.ExecuteTemplate(w, "error-page.html", errData)
+		if err != nil {
+			// Log the error if the error template itself fails to render
+			log.Printf("Error rendering template %s: %v", "error-page.html", err)
+			// Send a generic error message to the client
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			// Attempt to render the error template again with the new error
+			// Note: This could potentially cause infinite recursion if not handled carefully
+			RenderErrorTemplate(w, err, 400, "")
+		}
 	}
 }

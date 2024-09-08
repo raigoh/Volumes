@@ -32,6 +32,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		user, err = session.GetUserByID(userID)
 		if err != nil {
 			log.Printf("Error fetching user: %v", err)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, the database is being picky today.. We are still training him")
 		}
 	}
 
@@ -84,6 +85,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		likes, dislikes, err := like.GetLikesCount(p.ID, "post")
 		if err != nil {
 			log.Printf("Error fetching like counts for post %d: %v", p.ID, err)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, who would like this even?!?")
 		} else {
 			posts[i].Likes = likes
 			posts[i].Dislikes = dislikes

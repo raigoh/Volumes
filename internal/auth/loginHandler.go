@@ -32,6 +32,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error parsing form: %v", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)
+			utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Something went wrong")
 			return
 		}
 
@@ -86,6 +87,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error creating session: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Oh no, cookie can is empty :(")
 			return
 		}
 

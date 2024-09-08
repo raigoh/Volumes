@@ -86,6 +86,7 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error fetching categories: %v", err)
 			http.Error(w, "Error fetching categories", http.StatusInternalServerError)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 			return
 		}
 
@@ -150,6 +151,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error fetching post: %v", err)
 		http.Error(w, "Error fetching post", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 
@@ -158,6 +160,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error fetching comments: %v", err)
 		http.Error(w, "Error fetching comments", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 
@@ -176,6 +179,7 @@ func PostListHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := database.GetPosts()
 	if err != nil {
 		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
 
