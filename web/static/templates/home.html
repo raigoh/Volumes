@@ -39,10 +39,7 @@
                     <a href="/post/{{.ID}}">{{.Title}}</a>
                     <span class="meta">
                       Posted by {{.User.Username}} | {{.CreatedAt.Format
-                      "January 2, 2006"}} | Category:
-                      <a href="/?category={{.Category.ID}}"
-                        >{{.Category.Name}}</a
-                      >
+                      "January 2, 2006"}} | Category: {{.Category.Name}}
                     </span>
                     <div class="like-section">
                       {{if $.User}}
