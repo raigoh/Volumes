@@ -6,6 +6,7 @@
     <title>{{.Title}}</title>
     <link rel="stylesheet" href="/static/css/home.css" />
   </head>
+
   <body>
     <div class="home-template">
       <header class="site-header">
@@ -26,60 +27,43 @@
         <div class="home-container">
           <div class="home-content">
             <h2>Welcome to Literary Lions Forum</h2>
-            <div class="filter-options">
-              <div class="filter-row">
-                <form action="/home" method="POST" class="main-filters">
-                  <label for="category">Category:</label>
-                  <select name="category" id="category">
-                    <option value="">All Categories</option>
-                    {{range .Data.AllCategories}}
-                    <option value="{{.ID}}" {{if eq (printf "%d" .ID) (printf "%d" $.Data.SelectedCategory)}}selected{{end}}>{{.Name}}</option>
-                    {{end}}
-                  </select>
-
-                  {{if .User}}
-                  <label for="user">Posts:</label>
-                  <select name="user" id="user">
-                    <option value="">All Posts</option>
-                    <option value="{{.User.ID}}" {{if eq (printf "%s" .User.ID) (printf "%d" $.Data.FilterUserID)}}selected{{end}}>My Posts</option>
-                  </select>
-
-                  <label for="liked">
-                    <input type="checkbox" name="liked" id="liked" value="true" {{if $.Data.LikedOnly}}checked{{end}}> Liked Posts Only
-                  </label>
-                  {{end}}
-
-                  <button type="submit">Apply Filters</button>
-                </form>
-                <form action="/home" method="POST" class="search-form">
-                  <input type="text" name="query" id="searchQuery" placeholder="Search..." value="{{.Data.SearchQuery}}">
-                  <button type="submit">Search</button>
-                </form>
-              </div>
-            </div>
             <div id="contentArea" class="forum-sections">
               <div class="section">
-                <h3>{{if .Data.SearchQuery}}Search Results for "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}</h3>
+                <h3>
+                  {{if .Data.SearchQuery}}Search Results for
+                  "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}
+                </h3>
                 <ul id="postsList">
-                  {{range (slice .Data.Posts 0 5)}}
+                  {{range .Data.Posts}}
                   <li>
                     <a href="/post/{{.ID}}">{{.Title}}</a>
                     <span class="meta">
-                      Posted by {{.User.Username}} | {{.CreatedAt.Format "January 2, 2006"}} | Category:
-                      <a href="/?category={{.Category.ID}}">{{.Category.Name}}</a>
+                      Posted by {{.User.Username}} | {{.CreatedAt.Format
+                      "January 2, 2006"}} | Category:
+                      <a href="/?category={{.Category.ID}}"
+                        >{{.Category.Name}}</a
+                      >
                     </span>
                     <div class="like-section">
-                      <form action="/like" method="POST" style="display: inline;">
-                          <input type="hidden" name="target_id" value="{{.ID}}">
-                          <input type="hidden" name="target_type" value="post">
-                          <input type="hidden" name="is_like" value="true">
-                          <button type="submit">Like ({{.Likes}})</button>
+                      <form
+                        action="/like"
+                        method="POST"
+                        style="display: inline"
+                      >
+                        <input type="hidden" name="target_id" value="{{.ID}}" />
+                        <input type="hidden" name="target_type" value="post" />
+                        <input type="hidden" name="is_like" value="true" />
+                        <button type="submit">Like ({{.Likes}})</button>
                       </form>
-                      <form action="/like" method="POST" style="display: inline;">
-                          <input type="hidden" name="target_id" value="{{.ID}}">
-                          <input type="hidden" name="target_type" value="post">
-                          <input type="hidden" name="is_like" value="false">
-                          <button type="submit">Dislike ({{.Dislikes}})</button>
+                      <form
+                        action="/like"
+                        method="POST"
+                        style="display: inline"
+                      >
+                        <input type="hidden" name="target_id" value="{{.ID}}" />
+                        <input type="hidden" name="target_type" value="post" />
+                        <input type="hidden" name="is_like" value="false" />
+                        <button type="submit">Dislike ({{.Dislikes}})</button>
                       </form>
                     </div>
                   </li>
@@ -92,7 +76,8 @@
                 <div class="section popular-categories">
                   <h3>Popular Categories</h3>
                   <ul>
-                    {{range $index, $category := slice .Data.PopularCategories 0 5}}
+                    {{range $index, $category := slice .Data.PopularCategories 0
+                    5}}
                     <li>{{$category.Name}}</li>
                     {{else}}
                     <li>No categories found</li>
@@ -114,11 +99,13 @@
             {{if .User}}
             <div class="cta-container">
               <a href="/new-post" class="cta-button">Start a New Discussion</a>
+              <a href="/all-posts" class="cta-button">View all Posts</a>
             </div>
             {{else}}
             <div class="cta-container">
               <p>Join our community to start discussions and post comments!</p>
               <a href="/register" class="cta-button">Register Now</a>
+              <a href="/all-posts" class="cta-button">View all Posts</a>
             </div>
             {{end}}
           </div>

@@ -60,6 +60,7 @@ func main() {
 	// Post-related routes
 	http.HandleFunc("/new-post", auth.RequireAuth(post.NewPostHandler)) // Requires authentication
 	http.HandleFunc("/post/", post.PostDetailHandler)
+	http.HandleFunc("/all-posts", post.AllPostsHandler)
 
 	// Comment route
 	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler)) // Requires authentication

@@ -1,9 +1,8 @@
-package home
+package post
 
 import (
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/models"
-	"literary-lions-forum/internal/post"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
 	"literary-lions-forum/pkg/session"
@@ -47,7 +46,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	utils.RenderTemplate(w, "search.html", pageData)
+	utils.RenderTemplate(w, "all-posts.html", pageData)
 }
 
 func EnhancedSearch(query string, limit int) ([]models.Post, error) {
@@ -60,7 +59,7 @@ func EnhancedSearch(query string, limit int) ([]models.Post, error) {
 		userID, err := strconv.Atoi(matchedUser.ID)
 		if err == nil {
 			// If a user is found and ID conversion is successful, return their posts
-			return post.GetFilteredPosts(0, userID, false, limit)
+			return GetFilteredPosts(0, userID, false, limit)
 		}
 	}
 
@@ -70,13 +69,13 @@ func EnhancedSearch(query string, limit int) ([]models.Post, error) {
 		for _, cat := range categories {
 			if strings.ToLower(cat.Name) == query {
 				// If a category is found, return posts from that category
-				return post.GetFilteredPosts(cat.ID, 0, false, limit)
+				return GetFilteredPosts(cat.ID, 0, false, limit)
 			}
 		}
 	}
 
 	// If no user or category match, perform a general search
-	return post.SearchPosts(query, limit)
+	return SearchPosts(query, limit)
 }
 
 // GetUserByUsername retrieves a user from the database by their username
