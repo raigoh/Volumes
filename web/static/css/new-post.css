@@ -58,7 +58,6 @@ html {
   box-sizing: border-box;
 }
 
-
 .new-post-template input[type="text"],
 .new-post-template select,
 .new-post-template textarea {
@@ -99,15 +98,7 @@ html {
   max-height: 300px;
 }
 
-.new-post-template .submit-button {
-  background: #8e44ad;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  border-radius: 25px;
-}
-
+.new-post-template .submit-button,
 .new-post-template .home-button {
   background: #8e44ad;
   color: white;
@@ -115,13 +106,15 @@ html {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
   border-radius: 25px;
-} 
-
-.new-post-template .submit-button:hover {
-  background: #9b59b6;
-  transform: scale(1.05);
+  width: 100%; /* Ensures both buttons take up the full width */
+  padding: 0.65rem;
+  margin-bottom: 1rem; /* Adds spacing between the two buttons */
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
 }
 
+.new-post-template .submit-button:hover,
 .new-post-template .home-button:hover {
   background: #9b59b6;
   transform: scale(1.05);
