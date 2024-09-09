@@ -60,14 +60,19 @@
               </form>
               <form action="/all-posts" method="POST" class="search-form">
                 <input type="text" name="query" id="searchQuery" placeholder="Search..." value="{{.Data.SearchQuery}}">
-                <button type="submit">Search</button>
+                <button type="submit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  Search
+                </button>
               </form>
             </div>
           </div>
           <div id="contentArea" class="forum-sections">
             <div class="section">
-              <h3>{{if .Data.SearchQuery}}Search Results for "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}
-              </h3>
+              <h3>{{if .Data.SearchQuery}}Search Results for "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}</h3>
               <ul id="postsList">
                 {{range .Data.Posts}}
                 <li>
@@ -77,18 +82,47 @@
                     <a href="/?category={{.Category.ID}}">{{.Category.Name}}</a>
                   </span>
                   <div class="like-section">
+                    {{if $.User}}
                     <form action="/like" method="POST" style="display: inline;">
                       <input type="hidden" name="target_id" value="{{.ID}}">
                       <input type="hidden" name="target_type" value="post">
                       <input type="hidden" name="is_like" value="true">
-                      <button type="submit">Like ({{.Likes}})</button>
+                      <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                        Like ({{.Likes}})
+                      </button>
                     </form>
                     <form action="/like" method="POST" style="display: inline;">
                       <input type="hidden" name="target_id" value="{{.ID}}">
                       <input type="hidden" name="target_type" value="post">
                       <input type="hidden" name="is_like" value="false">
-                      <button type="submit">Dislike ({{.Dislikes}})</button>
+                      <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                        </svg>
+                        Dislike ({{.Dislikes}})
+                      </button>
                     </form>
+                    {{else}}
+                      <span class="like-count">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                        Likes: {{.Likes}}
+                      </span>
+                      <span class="dislike-count">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                        </svg>
+                        Dislikes: {{.Dislikes}}
+                      </span>
+                      <p class="login-prompt">
+                        Please <a href="/login">log in</a> or
+                        <a href="/register">register</a> to like or dislike posts.
+                      </p>
+                    {{end}}
                   </div>
                 </li>
                 {{else}}

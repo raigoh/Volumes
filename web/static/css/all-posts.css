@@ -178,6 +178,36 @@ html::-webkit-scrollbar-thumb {
   transform: scale(1.05);
 }
 
+button svg {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.like-section button svg,
+.like-count svg,
+.dislike-count svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.search-form button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.login-prompt a {
+  color: #007bff; /* Set the text color */
+  text-decoration: none; /* Remove underline */
+  font-weight: bold; /* Make the link bold */
+}
+
+.login-prompt a:hover {
+  color: #ffd700; /* Change color on hover */
+  text-decoration: underline; /* Add underline on hover */
+}
+
 .all-posts-template .cta-container {
   text-align: center;
   margin-top: auto;

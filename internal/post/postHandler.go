@@ -164,12 +164,26 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get the user's session
+	sess, _ := session.GetSession(w, r)
+	var user *models.User
+	if sess != nil {
+		userID := session.GetUserID(sess)
+		if userID != 0 {
+			user, err = session.GetUserByID(userID)
+			if err != nil {
+				log.Printf("Error fetching user: %v", err)
+			}
+		}
+	}
+
 	// Render the post detail template with post and comments data
 	utils.RenderTemplate(w, "post-detail.html", models.PageData{
 		Title:    post.Title + " - Literary Lions Forum",
 		Page:     "post-detail",
 		Post:     post,
 		Comments: comments,
+		User:     user,
 	})
 }
 

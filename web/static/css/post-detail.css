@@ -6,6 +6,31 @@ html {
   height: 100%;
 }
 
+/* For WebKit browsers (Chrome, Safari, Edge) */
+body,
+html {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #8e44ad #3a0f6b; /* For Firefox */
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  width: 12px; /* Adjust scrollbar width */
+}
+
+body::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track {
+  background: #3a0f6b; /* Scrollbar track color */
+}
+
+body::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb {
+  background-color: #8e44ad; /* Scrollbar thumb color */
+  border-radius: 6px; /* Scrollbar thumb roundness */
+  border: 2px solid #3a0f6b; /* Thumb border to create space effect */
+}
+
 /* Post Detail Template Styles */
 .post-detail-template {
   font-family: Arial, sans-serif;
@@ -123,6 +148,31 @@ html {
 .like-button:hover,
 .dislike-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+button svg {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.like-section button svg,
+.like-count svg,
+.dislike-count svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.login-prompt a {
+  color: #007bff; /* Set the text color */
+  text-decoration: none; /* Remove underline */
+  font-weight: bold; /* Make the link bold */
+}
+
+.login-prompt a:hover {
+  color: #ffd700; /* Change color on hover */
+  text-decoration: underline; /* Add underline on hover */
 }
 
 /* Add Comment Section Styles */
