@@ -79,52 +79,17 @@ html {
   transition: transform 0.3s ease;
 }
 
+.error-specifictext {
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}
+
 h1 {
   text-align: center;
   margin-bottom: 1.5rem;
   font-weight: 600;
   font-size: 2rem;
   letter-spacing: 2px;
-}
-
-.login-form input[type="email"],
-.login-form input[type="password"] {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
-  background: transparent;
-  color: #fff;
-  font-size: 1rem;
-  transition: border-color 0.3s, transform 0.3s;
-  margin-bottom: 1rem;
-}
-
-.login-form input:focus {
-  outline: none;
-  border-color: #b19cd9;
-  transform: translateY(-5px);
-}
-
-.login-form input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.options label {
-  display: flex;
-  align-items: center;
-}
-
-.options input[type="checkbox"] {
-  margin-right: 5px;
 }
 
 button {
@@ -138,35 +103,6 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
   margin-bottom: 1rem;
-}
-
-button:hover {
-  background: rgba(255, 255, 255, 0.4);
-  transform: translateY(-3px);
-}
-
-.admin-login {
-  background: rgba(177, 156, 217, 0.3);
-}
-
-.admin-login:hover {
-  background: rgba(177, 156, 217, 0.4);
-}
-
-.register {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-a {
-  color: #b19cd9;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-a:hover {
-  color: #d7c8f0;
 }
 
 .error {
@@ -189,9 +125,69 @@ footer {
   z-index: 10;
 }
 
+a {
+  color: #b19cd9;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #d7c8f0;
+}
+
 @media (max-width: 480px) {
   .error-container {
     width: 90%;
     padding: 2rem;
   }
+}
+
+.ui-error {
+	width: 100px; height: 100px;
+	margin-left: 125px;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+.ui-error{
+	&-circle{
+		stroke-dasharray:260.75219024795285px, 260.75219024795285px;
+		stroke-dashoffset: 260.75219024795285px;
+		animation: ani-error-circle 1.2s linear;
+	}
+	&-line1{
+		stroke-dasharray: 54px 55px;
+		stroke-dashoffset: 55px;
+		stroke-linecap: round;
+		animation: ani-error-line .15s 1.2s linear both;
+	}
+	&-line2{
+		stroke-dasharray: 54px 55px;
+		stroke-dashoffset: 55px;
+		stroke-linecap: round;
+		animation: ani-error-line .2s .9s linear both;
+	}
+}
+
+@keyframes ani-error-line{
+	to { stroke-dashoffset: 0; }
+}
+
+ @keyframes ani-error-circle {
+		0% {
+				stroke-dasharray: 0, 260.75219024795285px;
+				stroke-dashoffset: 0;
+		}
+		35% {
+				stroke-dasharray: 120px, 120px;
+				stroke-dashoffset: -120px;
+		}
+		70% {
+				stroke-dasharray: 0, 260.75219024795285px;
+				stroke-dashoffset: -260.75219024795285px;
+		}
+		100% {
+				stroke-dasharray: 260.75219024795285px, 0;
+				stroke-dashoffset: -260.75219024795285px;
+		}
 }

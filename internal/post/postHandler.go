@@ -26,20 +26,23 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Ensure the request method is POST
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
 	// Get the user's session and check authorization
 	sess, err := session.GetSession(w, r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
 	userID := session.GetUserID(sess)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
@@ -49,7 +52,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate form input
 	if title == "" || content == "" {
-		http.Error(w, "Title and content cannot be empty", http.StatusBadRequest)
+		//http.Error(w, "Title and content cannot be empty", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Title and content cannot be empty")
 		return
 	}
 
@@ -57,7 +61,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = database.DB.Exec("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)", userID, title, content)
 	if err != nil {
 		log.Printf("Error creating post: %v", err)
-		http.Error(w, "Error creating post", http.StatusInternalServerError)
+		//http.Error(w, "Error creating post", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Error creating post")
 		return
 	}
 
@@ -70,13 +75,15 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user's session and check authorization
 	sess, err := session.GetSession(w, r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
 	userID := session.GetUserID(sess)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
@@ -85,7 +92,7 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 		categories, err := category.GetCategories()
 		if err != nil {
 			log.Printf("Error fetching categories: %v", err)
-			http.Error(w, "Error fetching categories", http.StatusInternalServerError)
+			//http.Error(w, "Error fetching categories", http.StatusInternalServerError)
 			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 			return
 		}
@@ -105,13 +112,15 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 		content := r.FormValue("content")
 		categoryID, err := strconv.Atoi(r.FormValue("category"))
 		if err != nil {
-			http.Error(w, "Invalid category", http.StatusBadRequest)
+			//http.Error(w, "Invalid category", http.StatusBadRequest)
+			utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. IDK what to do with this data")
 			return
 		}
 
 		// Validate form input
 		if title == "" || content == "" {
-			http.Error(w, "Title and content cannot be empty", http.StatusBadRequest)
+			//http.Error(w, "Title and content cannot be empty", http.StatusBadRequest)
+			utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Server error. IDK what to do with this data")
 			return
 		}
 
@@ -119,7 +128,8 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 		postID, err := CreatePost(userID, categoryID, title, content)
 		if err != nil {
 			log.Printf("Error creating post: %v", err)
-			http.Error(w, "Error creating post", http.StatusInternalServerError)
+			//http.Error(w, "Error creating post", http.StatusInternalServerError)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Error creating post")
 			return
 		}
 
@@ -129,7 +139,8 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Handle any other HTTP methods
-	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 }
 
 // PostDetailHandler handles GET requests for viewing a specific post and its comments
@@ -150,7 +161,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := GetPostByID(postID)
 	if err != nil {
 		log.Printf("Error fetching post: %v", err)
-		http.Error(w, "Error fetching post", http.StatusInternalServerError)
+		//http.Error(w, "Error fetching post", http.StatusInternalServerError)
 		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
@@ -159,7 +170,7 @@ func PostDetailHandler(w http.ResponseWriter, r *http.Request) {
 	comments, err := comment.GetCommentsByPostID(postID)
 	if err != nil {
 		log.Printf("Error fetching comments: %v", err)
-		http.Error(w, "Error fetching comments", http.StatusInternalServerError)
+		//http.Error(w, "Error fetching comments", http.StatusInternalServerError)
 		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
@@ -192,8 +203,8 @@ func PostListHandler(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := database.GetPosts()
 	if err != nil {
-		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
-		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
+		//http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data 2 ")
 		return
 	}
 

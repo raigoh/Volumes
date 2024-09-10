@@ -40,6 +40,11 @@ html {
   pointer-events: none;
 }
 
+.error-specifictext {
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}
+
 @keyframes twinkle {
   0%,
   100% {

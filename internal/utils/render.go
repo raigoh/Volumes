@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"text/template"
 )
 
@@ -25,7 +26,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 		// Log the error for debugging purposes
 		log.Printf("Error rendering template %s: %v", tmpl, err)
 		// Send a generic error message to the client
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		// Note: The following line is commented out, presumably to avoid potential infinite recursion
 		//RenderErrorTemplate(w, err)
 		RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, please be patient, we are doing your best :(")
@@ -39,9 +40,11 @@ func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificT
 	errData := struct {
 		Error        error
 		SpecificText string
+		Status       string
 	}{
 		Error:        err,
 		SpecificText: specificText,
+		Status:       strconv.Itoa(status),
 	}
 
 	// If no error is provided, use a nil error
@@ -59,10 +62,10 @@ func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificT
 			// Log the error if the error template itself fails to render
 			log.Printf("Error rendering template %s: %v", "error-page.html", err)
 			// Send a generic error message to the client
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			RenderErrorTemplate(w, err, http.StatusInternalServerError, "Internal server error")
 			// Attempt to render the error template again with the new error
 			// Note: This could potentially cause infinite recursion if not handled carefully
-			RenderErrorTemplate(w, err, 400, "")
 		}
 	} else {
 		// Execute the error template with the error data, if error is not Bad Request
@@ -71,10 +74,10 @@ func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificT
 			// Log the error if the error template itself fails to render
 			log.Printf("Error rendering template %s: %v", "error-page.html", err)
 			// Send a generic error message to the client
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			// Attempt to render the error template again with the new error
 			// Note: This could potentially cause infinite recursion if not handled carefully
-			RenderErrorTemplate(w, err, 400, "")
+			RenderErrorTemplate(w, err, http.StatusInternalServerError, "Internal server error")
 		}
 	}
 }

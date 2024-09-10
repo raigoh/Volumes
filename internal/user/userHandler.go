@@ -17,15 +17,17 @@ func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate that a user ID was provided
 	if userID == "" {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		//http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
 
 	// Fetch the user data from the database
 	user, err := database.GetUserByID(userID)
 	if err != nil {
-		// If the user is not found, return a 404 error
-		http.Error(w, "User not found", http.StatusNotFound)
+		// If the user is not found, return a 400 error
+		//http.Error(w, "User not found", http.StatusNotFound)
+		utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
 
@@ -33,7 +35,8 @@ func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := database.GetUserPosts(userID)
 	if err != nil {
 		// If there's an error fetching posts, return a 500 error
-		http.Error(w, "Error fetching user posts", http.StatusInternalServerError)
+		//http.Error(w, "Error fetching user posts", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Error fetching user posts")
 		return
 	}
 

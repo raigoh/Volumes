@@ -10,6 +10,7 @@ import (
 	"literary-lions-forum/pkg/session"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // HomeHandler is the main handler for rendering the home page of the Literary Lions Forum.
@@ -37,11 +38,67 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			// Log the error and render an error page if there is an issue fetching the user data.
 			log.Printf("Error fetching user: %v", err)
 			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, the database is being picky today.. We are still training him")
-			return
 		}
 	}
 
-	// Fetch a list of popular categories, limited to 5. This data will be used to display popular categories on the homepage.
+	// Initialize variables for filtering and search
+	var categoryID int
+	var filterUserID int
+	var likedOnly bool
+	var searchQuery string
+
+	if r.Method == http.MethodPost {
+		r.ParseForm()
+
+		// Handle both search and filter options
+		searchQuery = r.FormValue("query")
+		categoryID, _ = strconv.Atoi(r.FormValue("category"))
+		filterUserID, _ = strconv.Atoi(r.FormValue("user"))
+		likedOnly = r.FormValue("liked") == "true"
+	} else {
+		// Handle GET parameters (you might want to remove this eventually)
+		categoryID, _ = strconv.Atoi(r.URL.Query().Get("category"))
+		filterUserID, _ = strconv.Atoi(r.URL.Query().Get("user"))
+		likedOnly, _ = strconv.ParseBool(r.URL.Query().Get("liked"))
+		searchQuery = r.URL.Query().Get("query")
+	}
+
+	// Only apply the likedOnly filter if the user is logged in
+	if userID == 0 {
+		likedOnly = false
+	}
+
+	var posts []models.Post
+	var err error
+
+	// Fetch posts based on search query or filters
+	if searchQuery != "" {
+		// If there's a search query, use it to search posts
+		posts, err = EnhancedSearch(searchQuery, 10) // Limit to 10 results
+	} else {
+		// If no search query, use the existing filter logic
+		posts, err = post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
+	}
+
+	if err != nil {
+		log.Printf("Error fetching posts: %v", err)
+		posts = []models.Post{}
+	}
+
+	// Fetch fresh like/dislike counts for each post
+	for i, p := range posts {
+		likes, dislikes, err := like.GetLikesCount(p.ID, "post")
+		if err != nil {
+			log.Printf("Error fetching like counts for post %d: %v", p.ID, err)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, who would like this even?!?")
+			return
+		} else {
+			posts[i].Likes = likes
+			posts[i].Dislikes = dislikes
+		}
+	}
+
+	// Fetch popular categories
 	popularCategories, err := category.GetPopularCategories(5)
 	if err != nil {
 		// Log the error if there is an issue fetching the popular categories, and set the data to an empty list to avoid breaking the page.

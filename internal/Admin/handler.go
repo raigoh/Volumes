@@ -71,7 +71,8 @@ func UserManagementHandler(w http.ResponseWriter, r *http.Request) {
 		users, err := database.GetAllUsers()
 		if err != nil {
 			log.Printf("Error getting users: %v", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Internal server error")
 			return
 		}
 
@@ -92,8 +93,9 @@ func UserManagementHandler(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			log.Printf("Error parsing form: %v", err)
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-			return
+			//http.Error(w, "Bad Request", http.StatusBadRequest)
+			utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Error parsing form.. ")
+			//return
 		}
 
 		// Extract user ID and action from form data
@@ -105,8 +107,9 @@ func UserManagementHandler(w http.ResponseWriter, r *http.Request) {
 			err := database.DeleteUser(userID)
 			if err != nil {
 				log.Printf("Error deleting user: %v", err)
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				return
+				//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Internal server error")
+				//return
 			}
 		}
 
@@ -115,6 +118,7 @@ func UserManagementHandler(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		// Handle unsupported HTTP methods
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		//http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 	}
 }

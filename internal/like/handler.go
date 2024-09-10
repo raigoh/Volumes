@@ -2,7 +2,6 @@ package like
 
 import (
 	"encoding/json"
-	"fmt"
 	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/session"
 	"log"
@@ -16,15 +15,16 @@ import (
 func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure the request method is POST. If not, return a "Method not allowed" error.
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
 	// Retrieve the user session to identify the user making the request.
 	sess, err := session.GetSession(w, r)
 	if err != nil {
-		// If session retrieval fails, return an "Unauthorized" error.
-		http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "Unauthorized: "+err.Error())
 		return
 	}
 
@@ -32,7 +32,8 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	userID := session.GetUserID(sess)
 	if userID == 0 {
 		// If the user ID is 0, they are not logged in, so return an "Unauthorized" error.
-		http.Error(w, "Unauthorized: User ID is 0", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized: User ID is 0", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "Unauthorized: User ID is 0")
 		return
 	}
 
@@ -40,7 +41,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	targetID, err := strconv.Atoi(r.FormValue("target_id"))
 	if err != nil {
 		// If the target ID is not a valid integer, return a "Bad Request" error and display a custom error message.
-		http.Error(w, "Invalid target ID", http.StatusBadRequest)
+		//http.Error(w, "Invalid target ID", http.StatusBadRequest)
 		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
 		return
 	}
@@ -49,8 +50,8 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	targetType := r.FormValue("target_type")
 	// Ensure that the target type is valid. If it's neither "post" nor "comment", return a "Bad Request" error.
 	if targetType != "post" && targetType != "comment" {
-		http.Error(w, "Invalid target type", http.StatusBadRequest)
-		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
+		//http.Error(w, "Invalid target type", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Invalid target type")
 		return
 	}
 
@@ -58,7 +59,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	isLike, err := strconv.ParseBool(r.FormValue("is_like"))
 	if err != nil {
 		// If the `is_like` value is invalid (not true/false), return a "Bad Request" error.
-		http.Error(w, "Invalid is_like value", http.StatusBadRequest)
+		//http.Error(w, "Invalid is_like value", http.StatusBadRequest)
 		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Server error. Database is not givin us what we want.. That lite picky database!")
 		return
 	}
@@ -68,7 +69,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// Log the error and return a "Server Error" response if there is an issue with adding the like or dislike.
 		log.Printf("Error processing like/dislike: %v", err)
-		http.Error(w, fmt.Sprintf("Error processing like/dislike: %v", err), http.StatusInternalServerError)
+		//http.Error(w, fmt.Sprintf("Error processing like/dislike: %v", err), http.StatusInternalServerError)
 		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
@@ -98,7 +99,8 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GetSession(w, r)
 	if err != nil {
 		// If session retrieval fails, return an "Unauthorized" error.
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
@@ -106,7 +108,8 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	userID := session.GetUserID(sess)
 	if userID == 0 {
 		// If the user is not logged in, return an "Unauthorized" error.
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 		return
 	}
 
@@ -119,7 +122,7 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	err = RemoveLike(userID, targetID, targetType)
 	if err != nil {
 		// If there is an error in removing the like/dislike, return a "Server Error" and log the error.
-		http.Error(w, "Error removing like", http.StatusInternalServerError)
+		//http.Error(w, "Error removing like", http.StatusInternalServerError)
 		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}
@@ -128,7 +131,7 @@ func UnLikeHandler(w http.ResponseWriter, r *http.Request) {
 	likes, dislikes, err := GetLikesCount(targetID, targetType)
 	if err != nil {
 		// If there is an error fetching the like/dislike count, return a "Server Error".
-		http.Error(w, "Error getting like count", http.StatusInternalServerError)
+		//http.Error(w, "Error getting like count", http.StatusInternalServerError)
 		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error. IDK what to do with this data")
 		return
 	}

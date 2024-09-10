@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/database"
 	"literary-lions-forum/pkg/session"
 	"log"
@@ -13,35 +14,41 @@ import (
 func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure the request method is POST
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+
+		//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
 	// Get the user's session
 	sess, err := session.GetSession(w, r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Get the user ID from the session
 	userID := session.GetUserID(sess)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Parse and validate the post ID from the form data
 	postID, err := strconv.Atoi(r.FormValue("post_id"))
 	if err != nil {
-		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		//http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Invalid post ID")
 		return
 	}
 
 	// Get and validate the comment content
 	content := r.FormValue("content")
 	if content == "" {
-		http.Error(w, "Comment content cannot be empty", http.StatusBadRequest)
+		//http.Error(w, "Comment content cannot be empty", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Comment content cannot be empty")
 		return
 	}
 
@@ -49,7 +56,8 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = database.DB.Exec("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)", postID, userID, content)
 	if err != nil {
 		log.Printf("Error creating comment: %v", err)
-		http.Error(w, "Error creating comment", http.StatusInternalServerError)
+		//http.Error(w, "Error creating comment", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Error creating comment")
 		return
 	}
 
@@ -62,35 +70,40 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure the request method is POST
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		utils.RenderErrorTemplate(w, nil, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
 	// Get the user's session
 	sess, err := session.GetSession(w, r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Get the user ID from the session
 	userID := session.GetUserID(sess)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		utils.RenderErrorTemplate(w, nil, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Parse and validate the post ID from the form data
 	postID, err := strconv.Atoi(r.FormValue("post_id"))
 	if err != nil {
-		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		//http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Invalid post ID")
 		return
 	}
 
 	// Get and validate the comment content
 	content := r.FormValue("content")
 	if content == "" {
-		http.Error(w, "Comment content cannot be empty", http.StatusBadRequest)
+		//http.Error(w, "Comment content cannot be empty", http.StatusBadRequest)
+		utils.RenderErrorTemplate(w, nil, http.StatusBadRequest, "Comment content cannot be empty")
 		return
 	}
 
@@ -98,7 +111,8 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	err = CreateComment(userID, postID, content)
 	if err != nil {
 		log.Printf("Error creating comment: %v", err)
-		http.Error(w, "Error creating comment", http.StatusInternalServerError)
+		//http.Error(w, "Error creating comment", http.StatusInternalServerError)
+		utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Error creating comment")
 		return
 	}
 

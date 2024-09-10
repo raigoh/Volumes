@@ -12,7 +12,7 @@
   </head>
   <body>
     <main class="error-template">
-      <class="error-container">
+      <div class="error-container">
         <h1>Error</h1>
         <!-- SVG image for the error 500 -->
         <svg id="500_Bill" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-8.5 9.5 560 250">
@@ -152,10 +152,10 @@
         </g>
         
       </svg>
-        <div>Looks like something went wrong, our highly trained dogs are doing the best they can <br>
-            <a href="/">Go back to home</a>
-            <br> {{.SpecificText}}
+        <div>Looks like something went wrong, our lvl 80 trained WoW Rogues are doing the best they can <br>
+            <div class="error-specifictext">{{.SpecificText}}</div>
         </div>
+        <a href="/">Go back to home</a>
         {{if .Error}}
         <div class="error">{{.Error}}</div>
         {{end}}

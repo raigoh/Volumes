@@ -31,9 +31,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			log.Printf("Error parsing form: %v", err)
-			http.Error(w, "Bad Request", http.StatusBadRequest)
+			//http.Error(w, "Bad Request", http.StatusBadRequest)
 			utils.RenderErrorTemplate(w, err, http.StatusBadRequest, "Something went wrong")
-			return
+			//return
 		}
 
 		// Extract email and password from the form
@@ -86,7 +86,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		sess, err := session.GetSession(w, r)
 		if err != nil {
 			log.Printf("Error creating session: %v", err)
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			//http.Error(w, "Internal server error", http.StatusInternalServerError)
 			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Oh no, cookie can is empty :(")
 			return
 		}

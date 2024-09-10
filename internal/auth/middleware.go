@@ -2,6 +2,7 @@ package auth
 
 import (
 	admin "literary-lions-forum/internal/Admin"
+	"literary-lions-forum/internal/utils"
 	"literary-lions-forum/pkg/session"
 	"net/http"
 )
@@ -40,7 +41,8 @@ func RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 		// If there's an error checking admin status or the user is not an admin,
 		// return a Forbidden error
 		if err != nil || !isAdmin {
-			http.Error(w, "Unauthorized", http.StatusForbidden)
+			//http.Error(w, "Unauthorized", http.StatusForbidden)
+			utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 			return
 		}
 		// If the user is authenticated and an admin, proceed to the next handler
@@ -56,12 +58,14 @@ func AdminOnly(next http.HandlerFunc) http.HandlerFunc {
 		sess, err := session.GetSession(w, r)
 		// If there's an error retrieving the session, return an Unauthorized error
 		if err != nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 			return
 		}
 		// Check if the user is an admin using the session data
 		if !session.GetIsAdmin(sess) {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			//http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			utils.RenderErrorTemplate(w, err, http.StatusUnauthorized, "You shuold not be here, unauthorized access")
 			return
 		}
 		// If the user is an admin, proceed to the next handler
