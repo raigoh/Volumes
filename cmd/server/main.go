@@ -53,7 +53,7 @@ func main() {
 	// Each of these lines maps a URL path to a specific handler function
 
 	// Home page
-	http.Handle("/", errors.RecoverMiddleware(http.HandlerFunc(home.HomeHandler)))
+	http.HandleFunc("/", home.HomeHandler)
 
 	// Authentication routes
 	http.HandleFunc("/register", auth.RegisterHandler)
