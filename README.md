@@ -43,7 +43,7 @@ Literary Lions Forum is a vibrant web-based discussion platform for literature e
 1. Clone the repository:
 
 ```sh
-https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
+git clone https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
 cd literary-lions-forum
 ```
 
@@ -62,7 +62,7 @@ docker-compose up --build
 2. Clone the repository:
 
 ```sh
-https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
+git clone https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
 cd literary-lions-forum
 ```
 
@@ -86,8 +86,8 @@ To access the admin dashboard:
 
 1. Log in with the default admin credentials:
 
-   -Email: admin@admin.com
-   -Password: admin
+   - Email: admin@admin.com
+   - Password: admin
 
 2. Navigate to /admin/dashboard to access admin features.
 
@@ -126,8 +126,7 @@ literary-lions-forum/
 │ ├── images/
 │ └── templates/
 ├── data/
-├── .gitignore
-├── Dockerfile
+├── dockerfile
 ├── docker-compose.yml
 ├── go.mod
 ├── go.sum
@@ -139,6 +138,6 @@ The application handles errors gracefully, displaying user-friendly error pages.
 
 ## 📞 Contact
 
-Raigo Hõim - @discord: vikationu
-Simon Brown - @discord: Simon Brown
-Project Link: https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
+- Raigo Hõim - @discord: vikationu
+- Simon Brown - @discord: Simon Brown
+- Project Link: https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
