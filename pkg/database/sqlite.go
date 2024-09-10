@@ -18,7 +18,7 @@ func InitDB() error {
 	// Get the database path from environment variable or use default
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
-		dbPath = "./forum.db" // Default path if not set
+		dbPath = ".data/forum.db" // Default path if not set
 	}
 
 	// Open the SQLite database

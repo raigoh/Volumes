@@ -1,158 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{.Title}}</title>
-    <link rel="stylesheet" href="/static/css/home.css" />
-  </head>
 
-  <body>
-    <div class="home-template">
-      <header class="site-header">
-        <div class="header-content">
-          <h1>Literary Lions Forum</h1>
-          <nav>
-            {{if .User}}
-            <span>Welcome, {{.User.Username}}</span>
-            <a href="/logout" class="logout-button">Logout</a>
-            {{else}}
-            <a href="/login" class="login-button">Login</a>
-            <a href="/register" class="register-button">Register</a>
-            {{end}}
-          </nav>
-        </div>
-      </header>
-      <main>
-        <div class="home-container">
-          <div class="home-content">
-            <h2>Welcome to Literary Lions Forum</h2>
-            <div id="contentArea" class="forum-sections">
-              <div class="section">
-                <h3>
-                  {{if .Data.SearchQuery}}Search Results for
-                  "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}
-                </h3>
-                <ul id="postsList">
-                  {{range .Data.Posts}}
-                  <li>
-                    <a href="/post/{{.ID}}">{{.Title}}</a>
-                    <span class="meta">
-                      Posted by {{.User.Username}} | {{.CreatedAt.Format
-                      "January 2, 2006"}} | Category: {{.Category.Name}}
-                    </span>
-                    <div class="like-section">
-                      {{if $.User}}
-                      <form
-                        action="/like"
-                        method="POST"
-                        style="display: inline"
-                      >
-                        <input type="hidden" name="target_id" value="{{.ID}}" />
-                        <input type="hidden" name="target_type" value="post" />
-                        <input type="hidden" name="is_like" value="true" />
-                        <button type="submit">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path
-                              d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
-                            ></path>
-                          </svg>
-                          Like: {{.Likes}}
-                        </button>
-                      </form>
-                      <form
-                        action="/like"
-                        method="POST"
-                        style="display: inline"
-                      >
-                        <input type="hidden" name="target_id" value="{{.ID}}" />
-                        <input type="hidden" name="target_type" value="post" />
-                        <input type="hidden" name="is_like" value="false" />
-                        <button type="submit">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path
-                              d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"
-                            ></path>
-                          </svg>
-                          Dislike: {{.Dislikes}}
-                        </button>
-                      </form>
-                      {{else}}
-                      <p class="login-prompt">
-                        Please <a href="/login">log in</a> or
-                        <a href="/register">register</a> to like or dislike
-                        posts.
-                      </p>
-                      {{end}}
-                    </div>
-                  </li>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{.Title}}</title>
+  <link rel="stylesheet" href="/static/css/home.css" />
+</head>
+
+<body>
+  <div class="home-template">
+    <header class="site-header">
+      <div class="header-content">
+        <h1>Literary Lions Forum</h1>
+        <nav>
+          {{if .User}}
+          <span>Welcome, {{.User.Username}}</span>
+          <a href="/logout" class="logout-button">Logout</a>
+          {{else}}
+          <a href="/login" class="login-button">Login</a>
+          <a href="/register" class="register-button">Register</a>
+          {{end}}
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="home-container">
+        <div class="home-content">
+          <h2>Welcome to Literary Lions Forum</h2>
+          <div id="contentArea" class="forum-sections">
+            <div class="section">
+              <h3>
+                {{if .Data.SearchQuery}}Search Results for
+                "{{.Data.SearchQuery}}"{{else}}Latest Discussions{{end}}
+              </h3>
+              <ul id="postsList">
+                {{range .Data.Posts}}
+                <li>
+                  <a href="/post/{{.ID}}">{{.Title}}</a>
+                  <span class="meta">
+                    Posted by {{.User.Username}} | {{.CreatedAt.Format
+                    "January 2, 2006"}} | Category: {{.Category.Name}}
+                  </span>
+                  <div class="like-section">
+                    {{if $.User}}
+                    <form action="/like" method="POST" style="display: inline">
+                      <input type="hidden" name="target_id" value="{{.ID}}" />
+                      <input type="hidden" name="target_type" value="post" />
+                      <input type="hidden" name="is_like" value="true" />
+                      <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path
+                            d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                          </path>
+                        </svg>
+                        Like: {{.Likes}}
+                      </button>
+                    </form>
+                    <form action="/like" method="POST" style="display: inline">
+                      <input type="hidden" name="target_id" value="{{.ID}}" />
+                      <input type="hidden" name="target_type" value="post" />
+                      <input type="hidden" name="is_like" value="false" />
+                      <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path
+                            d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
+                          </path>
+                        </svg>
+                        Dislike: {{.Dislikes}}
+                      </button>
+                    </form>
+                    {{else}}
+                    <p class="login-prompt">
+                      Please <a href="/login">log in</a> or
+                      <a href="/register">register</a> to like or dislike
+                      posts.
+                    </p>
+                    {{end}}
+                  </div>
+                </li>
+                {{else}}
+                <li>No posts found</li>
+                {{end}}
+              </ul>
+            </div>
+            <div class="sidebar">
+              <div class="section popular-categories">
+                <h3>Popular Categories</h3>
+                <ul>
+                  {{ $categories := .Data.PopularCategories }}
+                  {{ $limit := 10 }}
+                  {{ if gt (len $categories) $limit }}
+                  {{ $categories = slice $categories 0 $limit }}
+                  {{ end }}
+                  {{range $category := $categories}}
+                  <li>{{$category.Name}}</li>
                   {{else}}
-                  <li>No posts found</li>
+                  <li>No categories found</li>
                   {{end}}
                 </ul>
               </div>
-              <div class="sidebar">
-                <div class="section popular-categories">
-                  <h3>Popular Categories</h3>
-                  <ul>
-                    {{range $index, $category := slice .Data.PopularCategories 0
-                    5}}
-                    <li>{{$category.Name}}</li>
-                    {{else}}
-                    <li>No categories found</li>
-                    {{end}}
-                  </ul>
-                </div>
-                <div class="section user-list">
-                  <h3>All Users</h3>
-                  <ul>
-                    {{range .Users}}
-                    <li><a href="/user/{{.ID}}">{{.Username}}</a></li>
-                    {{else}}
-                    <li>No users found</li>
-                    {{end}}
-                  </ul>
-                </div>
+              <div class="section user-list">
+                <h3>All Users</h3>
+                <ul>
+                  {{ $users := .Users }}
+                  {{ $limit := 10 }}
+                  {{ if gt (len $users) $limit }}
+                  {{ $users = slice $users 0 $limit }}
+                  {{ end }}
+                  {{range $user := $users}}
+                  <li><a href="/user/{{.ID}}">{{.Username}}</a></li>
+                  {{else}}
+                  <li>No users found</li>
+                  {{end}}
+                </ul>
               </div>
             </div>
-            {{if .User}}
-            <div class="cta-container">
-              <a href="/new-post" class="cta-button">Start a New Discussion</a>
-              <a href="/all-posts" class="cta-button">View all Posts</a>
-            </div>
-            {{else}}
-            <div class="cta-container">
-              <p>Join our community to start discussions and post comments!</p>
-              <a href="/register" class="cta-button">Register Now</a>
-              <a href="/all-posts" class="cta-button">View all Posts</a>
-            </div>
-            {{end}}
           </div>
+          {{if .User}}
+          <div class="cta-container">
+            <a href="/new-post" class="cta-button">Start a New Discussion</a>
+            <a href="/all-posts" class="cta-button">View all Posts</a>
+          </div>
+          {{else}}
+          <div class="cta-container">
+            <p>Join our community to start discussions and post comments!</p>
+            <a href="/register" class="cta-button">Register Now</a>
+            <a href="/all-posts" class="cta-button">View all Posts</a>
+          </div>
+          {{end}}
         </div>
-      </main>
-      <footer>
-        <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
-      </footer>
-    </div>
-  </body>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2024 Literary Lions Forum. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+
 </html>

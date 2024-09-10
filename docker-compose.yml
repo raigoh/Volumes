@@ -1,13 +1,20 @@
-version: "3"
+version: "3.8"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - .:/app
-      - /app/tmp
     environment:
-      - GO111MODULE=on
-    user: "${UID}:${GID}"
+      - DB_PATH=/app/data/forum.db
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - db
+
+  db:
+    image: nouchka/sqlite3
+    volumes:
+      - ./data:/app/data

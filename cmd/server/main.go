@@ -30,6 +30,9 @@ func main() {
 	fs := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
+	// Set the DB_PATH environment variable
+	os.Setenv("DB_PATH", "./data/forum.db")
+
 	// Initialize database
 	// This establishes a connection to the database and sets it up for use
 	err := database.InitDB()
