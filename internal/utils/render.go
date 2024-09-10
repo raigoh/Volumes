@@ -3,7 +3,6 @@ package utils
 import (
 	"log"
 	"net/http"
-	"path/filepath"
 	"strconv"
 	"text/template"
 )
@@ -88,14 +87,17 @@ func WithRecovery(handler http.HandlerFunc) http.HandlerFunc {
 		defer func() {
 			if rec := recover(); rec != nil {
 				log.Printf("Panic occurred: %v", rec)
-				RenderErrorPage(w)
+				RenderErrorPage(w, rec)
 			}
 		}()
 		handler(w, r)
 	}
 }
 
-func RenderErrorPage(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusInternalServerError)
-	RenderTemplate(w, filepath.Join("templates", "error-page.html"), nil)
+func RenderErrorPage(w http.ResponseWriter, recoverErr interface{}) {
+	err, ok := recoverErr.(error)
+	if !ok {
+		err = nil
+	}
+	RenderErrorTemplate(w, err, http.StatusInternalServerError, "An unexpected error occurred")
 }
