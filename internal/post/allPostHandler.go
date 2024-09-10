@@ -16,6 +16,9 @@ import (
 // It supports filtering posts by category, user, and showing only liked posts.
 // Additionally, it includes search functionality to find posts by a query.
 func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Retrieve the current session and user ID (if the user is logged in).
 	sess, _ := session.GetSession(w, r)
 	userID := session.GetUserID(sess)

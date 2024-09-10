@@ -12,6 +12,9 @@ import (
 // CreateCommentHandler handles the HTTP request for creating a new comment.
 // It performs authentication, validation, and directly inserts the comment into the database.
 func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Ensure the request method is POST
 	if r.Method != http.MethodPost {
 

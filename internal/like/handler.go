@@ -13,6 +13,9 @@ import (
 // LikeHandler handles HTTP POST requests for liking or disliking a post or comment.
 // It ensures the request is valid, checks user authentication, and processes the like or dislike action.
 func LikeHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Ensure the request method is POST. If not, return a "Method not allowed" error.
 	if r.Method != http.MethodPost {
 		//http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

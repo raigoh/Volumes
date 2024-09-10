@@ -14,6 +14,9 @@ import (
 // GET: Renders the registration form.
 // POST: Processes the registration attempt.
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Handle GET request
 	if r.Method == http.MethodGet {
 		// Render the registration page template

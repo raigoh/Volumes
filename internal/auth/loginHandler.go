@@ -15,6 +15,9 @@ import (
 // GET: Renders the login page.
 // POST: Processes the login attempt.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Handle GET request
 	if r.Method == http.MethodGet {
 		// Render the login page template

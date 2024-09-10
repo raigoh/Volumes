@@ -56,28 +56,28 @@ func main() {
 	http.HandleFunc("/", utils.WithRecovery(home.HomeHandler))
 
 	// Authentication routes
-	http.HandleFunc("/register", auth.RegisterHandler)
-	http.HandleFunc("/login", auth.LoginHandler)
-	http.HandleFunc("/logout", auth.LogoutHandler)
+	http.HandleFunc("/register", utils.WithRecovery(auth.RegisterHandler))
+	http.HandleFunc("/login", utils.WithRecovery(auth.LoginHandler))
+	http.HandleFunc("/logout", utils.WithRecovery(auth.LogoutHandler))
 
 	// Post-related routes
-	http.HandleFunc("/new-post", auth.RequireAuth(post.NewPostHandler)) // Requires authentication
-	http.HandleFunc("/post/", post.PostDetailHandler)
-	http.HandleFunc("/all-posts", post.AllPostsHandler)
+	http.HandleFunc("/new-post", utils.WithRecovery(auth.RequireAuth(post.NewPostHandler))) // Requires authentication
+	http.HandleFunc("/post/", utils.WithRecovery(post.PostDetailHandler))
+	http.HandleFunc("/all-posts", utils.WithRecovery(post.AllPostsHandler))
 
 	// Comment route
-	http.HandleFunc("/comment", auth.RequireAuth(comment.AddCommentHandler)) // Requires authentication
+	http.HandleFunc("/comment", utils.WithRecovery(auth.RequireAuth(comment.AddCommentHandler))) // Requires authentication
 
 	// Admin routes
-	http.HandleFunc("/admin/users", auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler)))     // Requires auth and admin privileges
-	http.HandleFunc("/admin/dashboard", auth.RequireAuth(auth.AdminOnly(admin.AdminDashboardHandler))) // Requires auth and admin privileges
+	http.HandleFunc("/admin/users", utils.WithRecovery(auth.RequireAuth(auth.AdminOnly(admin.UserManagementHandler))))     // Requires auth and admin privileges
+	http.HandleFunc("/admin/dashboard", utils.WithRecovery(auth.RequireAuth(auth.AdminOnly(admin.AdminDashboardHandler)))) // Requires auth and admin privileges
 
 	// Like/Unlike routes
-	http.HandleFunc("/like", like.LikeHandler)
-	http.HandleFunc("/unlike", like.UnLikeHandler)
+	http.HandleFunc("/like", utils.WithRecovery(like.LikeHandler))
+	http.HandleFunc("/unlike", utils.WithRecovery(like.UnLikeHandler))
 
 	// User profile route
-	http.HandleFunc("/user/{id}", user.UserProfileHandler)
+	http.HandleFunc("/user/{id}", utils.WithRecovery(user.UserProfileHandler))
 
 	// Error handler (for testing purposes)
 	http.HandleFunc("/error", errors.ErrorHandler)

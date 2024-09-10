@@ -15,6 +15,9 @@ import (
 // SearchHandler handles the search requests from the user.
 // It processes the search query and displays the relevant posts based on the query.
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Extract the search query from the URL parameters.
 	query := r.URL.Query().Get("query")
 	log.Printf("Searching for: %s", query) // Log the search query for debugging.

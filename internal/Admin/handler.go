@@ -11,6 +11,9 @@ import (
 // AdminDashboardHandler handles requests to the admin dashboard.
 // It fetches various statistics and recent activity data to display on the dashboard.
 func AdminDashboardHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Fetch total number of users
 	totalUsers, err := database.GetTotalUsers()
 	if err != nil {

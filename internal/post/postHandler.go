@@ -15,6 +15,9 @@ import (
 
 // CreatePostHandler handles both GET and POST requests for creating a new post
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Handle GET request: render the new post form
 	if r.Method == http.MethodGet {
 		utils.RenderTemplate(w, "new-post.html", models.PageData{

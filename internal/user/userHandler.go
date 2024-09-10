@@ -10,6 +10,9 @@ import (
 
 // UserProfileHandler handles HTTP requests for displaying a user's profile
 func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+
 	// Extract user ID from URL path
 	// This assumes the URL structure is /user/{userID}/
 	path := strings.TrimPrefix(r.URL.Path, "/user/")

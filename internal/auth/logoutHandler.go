@@ -8,6 +8,9 @@ import (
 // LogoutHandler handles the user logout process.
 // It destroys the user's session and redirects them to the home page.
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate an intentional error to test error handling
+	// panic("intentional error for testing")
+	
 	// Destroy the session associated with the current request
 	// This typically involves:
 	// 1. Invalidating the session ID
