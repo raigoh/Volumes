@@ -93,6 +93,8 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 				// Convert the recovered value to an error
 				var recoverErr error
 				switch t := err.(type) {
+				case nil:
+					recoverErr = fmt.Errorf("an unexpected error occurred")
 				case string:
 					recoverErr = fmt.Errorf(t)
 				case error:

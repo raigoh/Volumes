@@ -18,7 +18,7 @@ import (
 // This data is then passed to a template for rendering the homepage.
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// Simulate a panic for testing
-	panic("Something went wrong!")
+	panic(nil)
 
 	// Set HTTP headers to prevent caching of the home page to ensure users see the most updated content.
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
