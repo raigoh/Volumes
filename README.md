@@ -101,6 +101,7 @@ The project uses SQLite as its database. The database file is automatically crea
 
 ## 🏗️ Project Structure
 
+```
 literary-lions-forum/
 ├── cmd/
 │ └── server/
@@ -131,6 +132,7 @@ literary-lions-forum/
 ├── go.mod
 ├── go.sum
 └── README.md
+```
 
 ## 🐛 Error Handling
 
