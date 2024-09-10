@@ -1,82 +1,144 @@
-# LITERARY LIONS FORUM
+# Literary Lions Forum
 
-## USAGE
+![Literary Lions Forum Logo](./web/static/images/home-page.png)
 
-### Docker
+Literary Lions Forum is a vibrant web-based discussion platform for literature enthusiasts. Connect with fellow book lovers, share your thoughts on your favorite works, and engage in stimulating literary discussions.
 
-Program and the database can be run from docker.
+## Table of Contents
 
-Make sure you have docker installed on your computer
+- [Features](#-features)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+    - [Option 1: Running with Docker](#option-1-running-with-docker)
+    - [Option 2: Running without Docker](#option-2-running-without-docker)
+- [Admin Access](#-admin-access)
+- [Database](#-database)
+- [Project Structure](#-project-structure)
+- [Error Handling](#-error-handling)
+- [Contributing](#-contributing)
+- [Contact](#-contact)
 
-Create the docker image using command <code>docker compose up</code> within the root folder where dockerfile and docker-compose.yml are located
+## 🌟 Features
 
---- THIS IS NOT REALLY WORKING?!!?!?!? ---
+- 👤 User registration and authentication
+- 📝 Create, read, update, and delete posts
+- 💬 Dynamic commenting system
+- 🏷️ Category-based post organization
+- 👍👎 Like/dislike functionality for posts and comments
+- 🛠️ Admin dashboard for content moderation and user management
 
-### From the commandline, without docker
+## 🚀 Getting Started
 
-The program can be run from the CLI using <code>go run cmd/server/main.go</code>
+### Prerequisites
 
-The server will start from default port 8080 and the website can be accessed from the browser <link>http://localhost:8080</link>
+- Go 1.22.3 or higher
+- SQLite3
+- Docker (optional)
 
-## Literary Lions Forum interface
+### Installation
 
-### Creating a user
+#### Option 1: Running with Docker
 
-Users can register giving a username, email and password.
-Password is protected, so that the registering user has to give the password twice and it has to the same password.
+1. Clone the repository:
 
-Passwords are stored in the database as blobs, so they cannot be seen if an unauthorized user gets hands on with the database file.
+```sh
+https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
+cd literary-lions-forum
+```
 
-Duplicate usernames or emails is prohibited and blocked by the server.
+2. Build and run the Docker containers:
 
-### Login in as an existing user
+```sh
+docker-compose up --build
+```
 
-Users can login using their email and password.
+3. Access the forum at http://localhost:8080
 
-Logins sessions are handled using UUID sessions
+#### Option 2: Running without Docker
 
-### Admin
+1. Ensure Go and SQLite3 are installed on your system.
 
-Admins can delete post and users if needed.
-<br>The default admin user is
-<br>email: admin@admin.com
-<br>password admin
+2. Clone the repository:
 
-### Functionality of the forum
+```sh
+https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
+cd literary-lions-forum
+```
 
-#### Posting
+3. Install dependencies:
 
-Posting can be done from the home page by clicking "create new post"
-Every field is required before the post can be uploaded to the database
+```sh
+go mod download
+```
 
-#### Reading post
+4. Run the server:
 
-Recent post can be seen on the home page, also filtering post by name or category is possible in this window.
+```sh
+go run cmd/server/main.go
+```
 
-Seeing all post can be done by
+5. Access the forum at http://localhost:8080
 
--- INSERT HERE HOW THE NEW PAGE WORKS --
+## 👑 Admin Access
 
-#### Users
+To access the admin dashboard:
 
-All the users post can be seen under the usernames profile
+1. Log in with the default admin credentials:
 
-#### Likes and dislikes
+   -Email: admin@admin.com
+   -Password: admin
 
-Users can like or dislike post or comments by clicking the thumbs up or down button
-Total likes and dislikes are shown in the button
+2. Navigate to /admin/dashboard to access admin features.
 
-### Error handling
+## 💾 Database
 
-All the errors will be handled without the user noticing them. Website will show an error page corresponding error info for the user.
-Admins will find error in the command line correspoding what has happened.
+The project uses SQLite as its database. The database file is automatically created in the ./data directory when you run the server for the first time.
 
-## Database
+### Database Structure
 
-Server uses SQLite database
+![Database structure](./web/static/images/tableDiagram.png)
 
-### Structure
+## 🏗️ Project Structure
 
-Sturcture of the database is shown here
+literary-lions-forum/
+├── cmd/
+│ └── server/
+│ └── main.go
+├── internal/
+│ ├── Admin/
+│ ├── auth/
+│ ├── category/
+│ ├── comment/
+│ ├── errors/
+│ ├── home/
+│ ├── like/
+│ ├── models/
+│ ├── post/
+│ ├── user/
+│ └── utils/
+├── pkg/
+│ ├── database/
+│ └── session/
+├── web/
+│ └── static/
+│ ├── css/
+│ ├── images/
+│ └── templates/
+├── data/
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── go.mod
+├── go.sum
+└── README.md
 
-![plot](./web/static/images/tableDiagram.png)
+## 🐛 Error Handling
+
+The application handles errors gracefully, displaying user-friendly error pages. Detailed error logs are available in the server console for administrators.
+
+## 📞 Contact
+
+Raigo Hõim - @discord: vikationu
+Simon Brown - @discord: Simon Brown
+Project Link: https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
