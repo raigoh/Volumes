@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -80,4 +81,30 @@ func RenderErrorTemplate(w http.ResponseWriter, err error, status int, specificT
 			RenderErrorTemplate(w, err, http.StatusInternalServerError, "Internal server error")
 		}
 	}
+}
+
+func RecoverMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				// Log the error
+				log.Printf("Recovered from panic: %v", err)
+
+				// Convert the recovered value to an error
+				var recoverErr error
+				switch t := err.(type) {
+				case string:
+					recoverErr = fmt.Errorf(t)
+				case error:
+					recoverErr = t
+				default:
+					recoverErr = fmt.Errorf("unknown error: %v", t)
+				}
+
+				// Use the utils.RenderErrorTemplate to display the error
+				RenderErrorTemplate(w, recoverErr, http.StatusInternalServerError, "An unexpected error occurred")
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }
