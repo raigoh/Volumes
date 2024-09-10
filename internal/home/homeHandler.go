@@ -74,7 +74,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts based on search query or filters
 	if searchQuery != "" {
 		// If there's a search query, use it to search posts
-		posts, err = EnhancedSearch(searchQuery, 10) // Limit to 10 results
+		posts, err = post.EnhancedSearch(searchQuery, 10) // Limit to 10 results
 	} else {
 		// If no search query, use the existing filter logic
 		posts, err = post.GetFilteredPosts(categoryID, filterUserID, likedOnly, 10)
