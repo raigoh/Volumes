@@ -17,6 +17,9 @@ import (
 // It fetches data such as user session information, popular categories, all categories, latest posts, and user details.
 // This data is then passed to a template for rendering the homepage.
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	// Simulate a panic for testing
+	panic("Something went wrong!")
+
 	// Set HTTP headers to prevent caching of the home page to ensure users see the most updated content.
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	w.Header().Set("Pragma", "no-cache")
