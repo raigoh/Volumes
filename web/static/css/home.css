@@ -98,7 +98,7 @@ html {
 }
 
 .home-template .section {
-  width: 48%;
+  width: 55%;
 }
 
 .home-template h3 {
@@ -234,7 +234,7 @@ button svg {
 }
 
 .home-template .sidebar {
-  width: 35%;
+  width: 40%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -254,7 +254,6 @@ button svg {
 
 /* Adjust the list styles for better fit */
 .home-template .sidebar ul {
-  max-height: 150px; /* Adjust this value to control the height of the lists */
   overflow-y: auto;
 }
 
