@@ -39,7 +39,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Perform an enhanced search for posts based on the query.
-	posts, err := EnhancedSearch(query, 10)
+	posts, err := EnhancedSearch(query)
 	if err != nil {
 		log.Printf("Error searching: %v", err) // Log any search-related errors.
 		posts = []models.Post{}                // If there’s an error, set posts to an empty slice to avoid rendering issues.
@@ -65,7 +65,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 // - Search by username.
 // - Search by category name.
 // - General post search based on the query.
-func EnhancedSearch(query string, limit int) ([]models.Post, error) {
+func EnhancedSearch(query string) ([]models.Post, error) {
 	// Trim spaces and convert the query to lowercase for case-insensitive search.
 	query = strings.TrimSpace(strings.ToLower(query))
 
@@ -76,7 +76,7 @@ func EnhancedSearch(query string, limit int) ([]models.Post, error) {
 		userID, err := strconv.Atoi(matchedUser.ID)
 		if err == nil {
 			// Return posts created by the found user.
-			return GetFilteredPosts(0, userID, false, limit)
+			return GetFilteredPosts(0, userID, false)
 		}
 	}
 
@@ -86,13 +86,13 @@ func EnhancedSearch(query string, limit int) ([]models.Post, error) {
 		for _, cat := range categories { // Loop through all categories.
 			if strings.ToLower(cat.Name) == query { // If a category name matches the query:
 				// Return posts from the matching category.
-				return GetFilteredPosts(cat.ID, 0, false, limit)
+				return GetFilteredPosts(cat.ID, 0, false)
 			}
 		}
 	}
 
 	// If no user or category matches, perform a general search on post titles and content.
-	return SearchPosts(query, limit)
+	return SearchPosts(query)
 }
 
 // GetUserByUsername retrieves a user from the database based on their username.

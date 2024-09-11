@@ -105,7 +105,7 @@ func GetPostByID(postID int) (*models.Post, error) {
 }
 
 // GetFilteredPosts retrieves posts based on various filter criteria such as category ID, user ID, liked posts only, and a limit.
-func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]models.Post, error) {
+func GetFilteredPosts(categoryID, userID int, likedOnly bool) ([]models.Post, error) {
 	// Base SQL query for retrieving posts with user and category information, and like/dislike counts.
 	query := `
         SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
@@ -149,7 +149,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 
 	// Add ordering and limit to the query.
 	query += " ORDER BY p.created_at DESC LIMIT ?"
-	args = append(args, limit)
+	args = append(args)
 
 	// Execute the query with the constructed arguments.
 	rows, err := database.DB.Query(query, args...)
@@ -182,7 +182,7 @@ func GetFilteredPosts(categoryID, userID int, likedOnly bool, limit int) ([]mode
 
 // SearchPosts retrieves posts based on a search query (searches both title and content).
 // It limits the results to the specified number of posts.
-func SearchPosts(query string, limit int) ([]models.Post, error) {
+func SearchPosts(query string) ([]models.Post, error) {
 	// SQL query to search for posts where the title or content matches the search query.
 	sqlQuery := `
 			SELECT DISTINCT p.id, p.title, p.content, p.created_at, 
@@ -200,7 +200,7 @@ func SearchPosts(query string, limit int) ([]models.Post, error) {
 	`
 
 	// Execute the query with the search query parameter (wildcards added for partial matches).
-	rows, err := database.DB.Query(sqlQuery, "%"+query+"%", "%"+query+"%", limit)
+	rows, err := database.DB.Query(sqlQuery, "%"+query+"%", "%"+query+"%")
 	if err != nil {
 		return nil, err
 	}
