@@ -69,10 +69,10 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If there's a search query, perform a search for posts matching the query.
 	if searchQuery != "" {
-		posts, err = EnhancedSearch(searchQuery, 10) // Limit results to 10 posts.
+		posts, err = EnhancedSearch(searchQuery, 0)
 	} else {
 		// Otherwise, get posts filtered by category, user, and liked status.
-		posts, err = GetFilteredPosts(categoryID, filterUserID, likedOnly, 10) // Limit results to 10 posts.
+		posts, err = GetFilteredPosts(categoryID, filterUserID, likedOnly, 0)
 	}
 
 	// Handle any errors that occur while fetching posts.

@@ -102,7 +102,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch popular categories
-	popularCategories, err := category.GetPopularCategories(5)
+	popularCategories, err := category.GetPopularCategories(10)
 	if err != nil {
 		// Log the error if there is an issue fetching the popular categories, and set the data to an empty list to avoid breaking the page.
 		log.Printf("Error fetching popular categories: %v", err)
