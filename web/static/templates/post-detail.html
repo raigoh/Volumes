@@ -19,9 +19,7 @@
             by {{.Post.User.Username}} | {{- $date := .Post.CreatedAt.Format
             "2006-01-02" -}} {{- $time := .Post.CreatedAt.Format "15:04" -}}
             {{$date}} {{$time}} | Category:
-            <a href="/category/{{.Post.Category.ID}}"
-              >{{.Post.Category.Name}}</a
-            >
+            <a href="/category/{{.Post.Category.ID}}">{{.Post.Category.Name}}</a>
           </div>
           <div class="post-content">{{.Post.Content}}</div>
         </div>

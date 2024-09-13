@@ -15,7 +15,7 @@
         <h1>Literary Lions Forum</h1>
         <nav>
           {{if .User}}
-          <span>Welcome, {{.User.Username}}</span>
+          <span>Welcome <a href="/user/{{.User.ID}}" class="logout-button">{{.User.Username}}</a></span>
           <a href="/logout" class="logout-button">Logout</a>
           {{else}}
           <a href="/login" class="login-button">Login</a>

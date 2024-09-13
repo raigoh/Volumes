@@ -62,10 +62,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			// Log the error and render the registration page with an error message
 			log.Printf("Error inserting user into database: %v", err)
+			var linkedError string
+			if err.Error() == "UNIQUE constraint failed: users.email" {
+				linkedError = "Email already used by another user"
+			} else if err.Error() == "UNIQUE constraint failed: users.username" {
+				linkedError = "Username already taken"
+			} else {
+				linkedError = err.Error()
+			}
 			utils.RenderTemplate(w, "register.html", models.PageData{
 				Title: "Register - Literary Lions Forum",
 				Page:  "register",
-				Error: "Error creating user: " + err.Error(),
+				Error: "Error creating user: " + linkedError,
 			})
 			return
 		}
