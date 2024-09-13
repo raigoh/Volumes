@@ -81,6 +81,7 @@ html::-webkit-scrollbar-thumb {
 .post-detail-template .post {
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
 }
 
 .post-detail-template h1 {
