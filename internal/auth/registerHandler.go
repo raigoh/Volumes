@@ -73,7 +73,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			utils.RenderTemplate(w, "register.html", models.PageData{
 				Title: "Register - Literary Lions Forum",
 				Page:  "register",
-				Error: "Error creating user: " + linkedError,
+				Error: linkedError,
 			})
 			return
 		}

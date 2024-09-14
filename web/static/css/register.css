@@ -127,6 +127,23 @@ html {
   text-decoration: underline;
 }
 
+.register-container .error-box {
+  background-color: #ff0000;
+  border: 1px solid #ff0000;
+  color: #020202;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* .register-container .error {
+  color: #ff0000;
+  margin-top: 10px;
+  text-align: center;
+} */
+
 .register-page footer {
   text-align: center;
   color: #b8a3d3;
