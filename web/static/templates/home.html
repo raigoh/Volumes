@@ -96,7 +96,7 @@
                   {{ $categories = slice $categories 0 $limit }}
                   {{ end }}
                   {{range $category := $categories}}
-                  <li>{{$category.Name}}</li>
+                  <li><a href="/all-posts?category={{$category.ID}}">{{$category.Name}}</a></li>
                   {{else}}
                   <li>No categories found</li>
                   {{end}}
