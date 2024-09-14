@@ -15,37 +15,50 @@ func AddLike(userID int, targetID int, targetType string, isLike bool) error {
 	}
 	defer tx.Rollback() // Ensure rollback if the function returns early
 
-	// Check if a like already exists for this user and target
+	// Check if a like/dislike already exists for this user and target
 	var existingID int
 	var existingIsLike bool
 	query := `
-			SELECT id, is_like FROM likes 
-			WHERE user_id = ? AND 
-			((?='post' AND post_id=?) OR (?='comment' AND comment_id=?))
+		SELECT id, is_like FROM likes 
+		WHERE user_id = ? AND 
+		((?='post' AND post_id=?) OR (?='comment' AND comment_id=?))
 	`
 	err = tx.QueryRow(query, userID, targetType, targetID, targetType, targetID).Scan(&existingID, &existingIsLike)
 
 	if err == sql.ErrNoRows {
-		// No existing like, insert a new one
+		// No existing like/dislike, insert a new one
 		insertQuery := `
-					INSERT INTO likes (user_id, post_id, comment_id, is_like)
-					VALUES (?, 
-							CASE WHEN ? = 'post' THEN ? ELSE NULL END, 
-							CASE WHEN ? = 'comment' THEN ? ELSE NULL END, 
-							?
-					)
-			`
+			INSERT INTO likes (user_id, post_id, comment_id, is_like)
+			VALUES (?, 
+				CASE WHEN ? = 'post' THEN ? ELSE NULL END, 
+				CASE WHEN ? = 'comment' THEN ? ELSE NULL END, 
+				?
+			)
+		`
 		_, err = tx.Exec(insertQuery, userID, targetType, targetID, targetType, targetID, isLike)
+		if err != nil {
+			return fmt.Errorf("error inserting like: %v", err)
+		}
 	} else if err == nil {
-		// Existing like found, update it
-		updateQuery := `UPDATE likes SET is_like = ? WHERE id = ?`
-		_, err = tx.Exec(updateQuery, isLike, existingID)
+		// Existing like/dislike found
+		if existingIsLike == isLike {
+			// If the action is the same (like/dislike), remove the existing entry
+			deleteQuery := `DELETE FROM likes WHERE id = ?`
+			_, err = tx.Exec(deleteQuery, existingID)
+			if err != nil {
+				return fmt.Errorf("error deleting like: %v", err)
+			}
+		} else {
+			// If the action is different, update the entry
+			updateQuery := `UPDATE likes SET is_like = ? WHERE id = ?`
+			_, err = tx.Exec(updateQuery, isLike, existingID)
+			if err != nil {
+				return fmt.Errorf("error updating like: %v", err)
+			}
+		}
 	} else {
+		// Some other error occurred
 		return fmt.Errorf("error checking for existing like: %v", err)
-	}
-
-	if err != nil {
-		return fmt.Errorf("error adding/updating like: %v", err)
 	}
 
 	// Commit the transaction
