@@ -40,7 +40,8 @@ html {
 
 .site-header .logout-button,
 .site-header .login-button,
-.site-header .register-button {
+.site-header .register-button,
+.site-header .admin-dashboard-button {
   background-color: #ffd700;
   color: #2a0845;
   padding: 0.5rem 1rem;
@@ -53,7 +54,8 @@ html {
 
 .site-header .logout-button:hover,
 .site-header .login-button:hover,
-.site-header .register-button:hover {
+.site-header .register-button:hover,
+.site-header .admin-dashboard-button:hover {
   background-color: #ffec8b;
   color: #2a0845;
   transform: scale(1.05);

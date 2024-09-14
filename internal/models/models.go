@@ -86,6 +86,7 @@ type PageData struct {
 	ActiveUsers    int                    // Number of currently active users
 	RecentActivity []Activity             // List of recent activities
 	Users          []User                 // List of users, if applicable
+	IsAdmin        bool
 }
 
 // Activity represents a recent activity in the forum

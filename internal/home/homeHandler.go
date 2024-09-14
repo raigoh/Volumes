@@ -1,6 +1,7 @@
 package home
 
 import (
+	admin "literary-lions-forum/internal/Admin"
 	"literary-lions-forum/internal/category"
 	"literary-lions-forum/internal/like"
 	"literary-lions-forum/internal/models"
@@ -41,6 +42,23 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			// Log the error and render an error page if there is an issue fetching the user data.
 			log.Printf("Error fetching user: %v", err)
 			utils.RenderErrorTemplate(w, err, http.StatusInternalServerError, "Server error, the database is being picky today.. We are still training him")
+		}
+	}
+
+	var isAdmin bool
+	if user != nil {
+		// Convert user.ID from string to int
+		userIDInt, err := strconv.Atoi(user.ID)
+		if err != nil {
+			log.Printf("Error converting user ID to integer: %v", err)
+			isAdmin = false // Set to false if there's an error
+		} else {
+			// Check if the user is an admin
+			isAdmin, err = admin.IsUserAdmin(userIDInt)
+			if err != nil {
+				log.Printf("Error checking user admin status: %v", err)
+				isAdmin = false // Set to false if there's an error
+			}
 		}
 	}
 
@@ -149,9 +167,10 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Prepare the data to be passed to the HTML template for rendering the homepage.
 	pageData := models.PageData{
-		Title: "Home - Literary Lions Forum", // Title of the webpage, displayed in the browser tab.
-		Page:  "home",                        // Identifier for the page, can be used to load page-specific scripts/styles.
-		User:  user,                          // The user object, which is `nil` if the user is not logged in.
+		Title:   "Home - Literary Lions Forum", // Title of the webpage, displayed in the browser tab.
+		Page:    "home",                        // Identifier for the page, can be used to load page-specific scripts/styles.
+		User:    user,                          // The user object, which is `nil` if the user is not logged in.
+		IsAdmin: isAdmin,
 		Data: map[string]interface{}{
 			"PopularCategories": popularCategories, // Popular categories data for display.
 			"AllCategories":     allCategories,     // All available categories for display.
