@@ -80,20 +80,25 @@ func CreatePost(userID, categoryID int, title, content string) (int, error) {
 func GetPostByID(postID int) (*models.Post, error) {
 	// SQL query to fetch post details along with user data and like/dislike counts.
 	query := `
-			SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username,
-						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
-						 (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
-			FROM posts p
-			JOIN users u ON p.user_id = u.id
-			WHERE p.id = ?
-	`
+        SELECT p.id, p.user_id, p.title, p.content, p.created_at, u.username,
+               c.id AS category_id, c.name AS category_name,
+               (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 1) as likes,
+               (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND is_like = 0) as dislikes
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_categories pc ON p.id = pc.post_id
+        LEFT JOIN categories c ON pc.category_id = c.id
+        WHERE p.id = ?
+    `
 	var post models.Post
 	var userID int
 
 	// Execute the query and scan the results into the Post object.
 	err := database.DB.QueryRow(query, postID).Scan(
 		&post.ID, &userID, &post.Title, &post.Content, &post.CreatedAt,
-		&post.User.Username, &post.Likes, &post.Dislikes,
+		&post.User.Username,
+		&post.Category.ID, &post.Category.Name,
+		&post.Likes, &post.Dislikes,
 	)
 	if err != nil {
 		return nil, err
