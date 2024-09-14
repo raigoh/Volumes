@@ -20,6 +20,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Extract the search query from the URL parameters.
 	query := r.URL.Query().Get("query")
+	liked := r.URL.Query().Get("liked")    // Check if the user wants only liked posts.
 	log.Printf("Searching for: %s", query) // Log the search query for debugging.
 
 	// Retrieve the session data for the current user (if any).
@@ -38,13 +39,24 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Perform an enhanced search for posts based on the query.
-	posts, err := EnhancedSearch(query, 10)
-	if err != nil {
-		log.Printf("Error searching: %v", err) // Log any search-related errors.
-		posts = []models.Post{}                // If there’s an error, set posts to an empty slice to avoid rendering issues.
+	var posts []models.Post
+	var err error
+
+	// If "liked" query is present and user is logged in, get liked posts.
+	if liked == "true" && userID != 0 {
+		posts, err = GetLikedPosts(userID, 10)
+		if err != nil {
+			log.Printf("Error fetching liked posts: %v", err)
+			posts = []models.Post{}
+		}
+	} else {
+		// Perform regular search.
+		posts, err = EnhancedSearch(query, 10)
+		if err != nil {
+			log.Printf("Error searching: %v", err)
+			posts = []models.Post{}
+		}
 	}
-	log.Printf("Found %d posts", len(posts)) // Log the number of posts found.
 
 	// Create a PageData object to store the data required for rendering the search results page.
 	pageData := models.PageData{

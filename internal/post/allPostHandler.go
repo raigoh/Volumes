@@ -70,12 +70,14 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	// Use a very large number as the limit to effectively get all posts
 	const unlimitedPosts = 1000000 // One million posts should be more than enough
 
-	// If there's a search query, perform a search for posts matching the query.
-	if searchQuery != "" {
+	if likedOnly && userID != 0 {
+		posts, err = GetLikedPosts(userID, unlimitedPosts)
+	} else if searchQuery != "" {
+		// Perform search if there's a search query
 		posts, err = EnhancedSearch(searchQuery, unlimitedPosts)
 	} else {
-		// Otherwise, get posts filtered by category, user, and liked status.
-		posts, err = GetFilteredPosts(categoryID, filterUserID, likedOnly, unlimitedPosts)
+		// Otherwise, get posts filtered by category and user
+		posts, err = GetFilteredPosts(categoryID, filterUserID, false, unlimitedPosts)
 	}
 
 	// Handle any errors that occur while fetching posts.

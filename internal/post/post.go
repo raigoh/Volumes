@@ -232,3 +232,43 @@ func SearchPosts(query string, limit int) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+// GetLikedPosts retrieves posts that the user has liked.
+func GetLikedPosts(userID, limit int) ([]models.Post, error) {
+	var posts []models.Post
+
+	query := `
+			SELECT p.id, p.title, p.content, p.created_at, 
+						 c.id AS category_id, c.name AS category_name,
+						 u.username AS user_username
+			FROM posts p
+			JOIN likes l ON l.post_id = p.id
+			JOIN users u ON u.id = p.user_id
+			LEFT JOIN post_categories pc ON p.id = pc.post_id
+			LEFT JOIN categories c ON pc.category_id = c.id
+			WHERE l.user_id = ? AND l.is_like = TRUE
+			ORDER BY p.created_at DESC
+			LIMIT ?
+	`
+
+	rows, err := database.DB.Query(query, userID, limit)
+	if err != nil {
+		return posts, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post models.Post
+		err := rows.Scan(
+			&post.ID, &post.Title, &post.Content, &post.CreatedAt,
+			&post.Category.ID, &post.Category.Name,
+			&post.User.Username,
+		)
+		if err != nil {
+			return posts, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
