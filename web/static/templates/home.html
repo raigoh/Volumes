@@ -45,7 +45,7 @@
                     Posted by {{.User.Username}} | {{.CreatedAt.Format
                     "January 2, 2006"}} | Category: {{.Category.Name}}
                   </span>
-                  <div class="like-section">
+                  <!-- <div class="like-section">
                     {{if $.User}}
                     <form action="/like" method="POST" style="display: inline">
                       <input type="hidden" name="target_id" value="{{.ID}}" />
@@ -82,7 +82,7 @@
                       posts.
                     </p>
                     {{end}}
-                  </div>
+                  </div> -->
                 </li>
                 {{else}}
                 <li>No posts found</li>

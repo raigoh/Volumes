@@ -144,7 +144,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch the latest posts, limited to 5. This will show the most recent discussions or posts on the homepage.
-	latestPosts, err := post.GetLatestPosts(5)
+	latestPosts, err := post.GetLatestPosts(10)
 	if err != nil {
 		// Log the error and set the posts list to empty if there is a problem fetching the latest posts.
 		log.Printf("Error fetching latest posts: %v", err)
