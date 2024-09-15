@@ -17,11 +17,32 @@
       <div class="post">
         <h1>{{.Post.Title}}</h1>
         <div class="post-meta">
-          Posted by {{.Post.User.Username}} | {{- $date := .Post.CreatedAt.Format
-          "2006-01-02" -}} {{- $time := .Post.CreatedAt.Format "15:04" -}}
+          Posted by {{.Post.User.Username}} |
+          {{- $date := .Post.CreatedAt.Format "2006-01-02" -}}
+          {{- $time := .Post.CreatedAt.Format "15:04" -}}
           {{$date}} {{$time}} | Category: {{.Post.Category.Name}}
         </div>
         <div class="post-content">{{.Post.Content}}</div>
+        <div class="post-actions">
+          {{if $.User}}
+          <form action="/like" method="POST" class="like-form">
+            <input type="hidden" name="target_id" value="{{.Post.ID}}" />
+            <input type="hidden" name="target_type" value="post" />
+            <input type="hidden" name="is_like" value="true" />
+            <button type="submit" class="like-button">👍 {{.Post.Likes}}</button>
+          </form>
+          <form action="/like" method="POST" class="dislike-form">
+            <input type="hidden" name="target_id" value="{{.Post.ID}}" />
+            <input type="hidden" name="target_type" value="post" />
+            <input type="hidden" name="is_like" value="false" />
+            <button type="submit" class="dislike-button">👎 {{.Post.Dislikes}}</button>
+          </form>
+          {{else}}
+          <p class="login-prompt">
+            Please <a href="/login">log in</a> or <a href="/register">register</a> to like or dislike this post.
+          </p>
+          {{end}}
+        </div>
       </div>
 
       <div class="comments-section">
