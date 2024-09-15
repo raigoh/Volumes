@@ -141,6 +141,12 @@ html::-webkit-scrollbar-thumb {
   border-radius: 5px;
 }
 
+.all-posts-template a[href^="/post/"] {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
 .all-posts-template a {
   color: #ffffff;
   text-decoration: none;
