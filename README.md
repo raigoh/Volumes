@@ -1,4 +1,4 @@
-# Literary Lions Forum
+# Volumes
 
 ![Literary Lions Forum Logo](./web/static/images/home-page.png)
 
@@ -43,8 +43,8 @@ Literary Lions Forum is a vibrant web-based discussion platform for literature e
 1. Clone the repository:
 
 ```sh
-git clone https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
-cd literary-lions-forum
+git clone https://github.com/raigoh/Volumes.git
+cd Volumes
 ```
 
 2. Build and run the Docker containers:
@@ -62,8 +62,8 @@ docker-compose up --build
 2. Clone the repository:
 
 ```sh
-git clone https://gitea.koodsisu.fi/raigohoim/literary-lions-forum.git
-cd literary-lions-forum
+git clone https://github.com/raigoh/Volumes.git
+cd Volumes
 ```
 
 3. Install dependencies:
